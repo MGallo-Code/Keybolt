@@ -1,10 +1,17 @@
+#![allow(unused_imports)]
 use iced::Settings;
-use iced::pure::widget::{Button, Column, Container, Text};
+use iced::pure::widget::{Button, Column, Container, Row, Text};
 use iced::pure::Sandbox;
-use profile_page::ProfilePage;
 
 // Include each page
+use profile_page::ProfilePage;
+use passwords_page::PasswordsPage;
+use identities_page::IdentitiesPage;
+use cards_page::CardsPage;
 mod profile_page;
+mod passwords_page;
+mod identities_page;
+mod cards_page;
 
 // Run application
 fn main() -> Result<(), iced::Error> {
@@ -16,6 +23,9 @@ fn main() -> Result<(), iced::Error> {
 struct AppView {
     current_view: Views,
     profile_page: ProfilePage,
+    passwords_page: PasswordsPage,
+    identities_page: IdentitiesPage,
+    cards_page: CardsPage,
 }
 
 // An enumeration of the different views in the application
@@ -23,6 +33,9 @@ struct AppView {
 pub enum Views {
     MainPage,
     ProfilePage,
+    PasswordsPage,
+    IdentitiesPage,
+    CardsPage,
 }
 
 // An enumeration of the messages the application can receive
@@ -40,12 +53,15 @@ impl Sandbox for AppView {
         AppView {
             current_view: Views::MainPage,
             profile_page: ProfilePage::new(),
+            passwords_page: PasswordsPage::new(),
+            identities_page: IdentitiesPage::new(),
+            cards_page: CardsPage::new(),
         }
     }
 
     // Return the title of the application
     fn title(&self) -> String {
-        String::from("Counter app")
+        String::from("Keybolt")
     }
 
     // Update the application's state based on received messages
@@ -57,15 +73,33 @@ impl Sandbox for AppView {
 
     // Define the application's user interface layout based on its state
     fn view(&self) -> iced::pure::Element<Self::Message> {
-        let label = Text::new(format!("View: {}", "Main"));
+        // Nav column
         let profile_btn = Button::new("Profile").on_press(AppMsg::ChangePage(Views::ProfilePage));
-        let col = Column::new().push(label).push(profile_btn);
-        let main_page_layout = Container::new(col).center_x().center_y().width(iced::Length::Fill).height(iced::Length::Fill);
+        let main_page_btn = Button::new("Main Page").on_press(AppMsg::ChangePage(Views::MainPage));
+        let pwds_page_btn = Button::new("Passwords").on_press(AppMsg::ChangePage(Views::PasswordsPage));
+        let identities_page_btn = Button::new("Identities").on_press(AppMsg::ChangePage(Views::IdentitiesPage));
+        let cards_page_btn = Button::new("Cards").on_press(AppMsg::ChangePage(Views::CardsPage));
+        let nav_col = Column::new()
+            .push(profile_btn)
+            .push(main_page_btn)
+            .push(pwds_page_btn)
+            .push(identities_page_btn)
+            .push(cards_page_btn);
+        
+        // Main page layout
+        let label = Text::new(format!("View: Main"));
+        let main_page_layout = Container::new(label).center_x().center_y().width(iced::Length::Fill).height(iced::Length::Fill).into();
 
-        // Display the appropriate view based on the current_view value
+        let window_view;
+        // Set appropriate window view based on the current_view value
         match self.current_view {
-            Views::MainPage => main_page_layout.into(),
-            Views::ProfilePage => self.profile_page.view(),
+            Views::MainPage => window_view = main_page_layout,
+            Views::ProfilePage => window_view = self.profile_page.view(),
+            Views::PasswordsPage => window_view = self.passwords_page.view(),
+            Views::IdentitiesPage => window_view = self.identities_page.view(),
+            Views::CardsPage => window_view = self.cards_page.view(),
         }
+        // Add nav and window view together, display()
+        Container::new(Row::new().push(nav_col).push(window_view)).into()
     }
 }

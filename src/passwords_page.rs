@@ -6,20 +6,20 @@ use iced::pure::Element;
 use crate::Views;
 use crate::AppMsg;
 
-// Define the ProfilePage struct
-pub struct ProfilePage;
+// Define the PasswordsPage struct
+pub struct PasswordsPage;
 
-// Implement methods for the ProfilePage struct
-impl ProfilePage {
-    // Create a new instance of the ProfilePage struct
+// Implement methods for the PasswordsPage struct
+impl PasswordsPage {
+    // Create a new instance of the PasswordsPage struct
     pub fn new() -> Self {
-        ProfilePage
+        PasswordsPage
     }
 
-    // Define the user interface layout for the ProfilePage
+    // Define the user interface layout for the PasswordsPage
     pub fn view(&self) -> Element<AppMsg> {
-        // Create a text label for the ProfilePage
-        let label = Text::new("Profile Page!");
+        // Create a text label for the PasswordsPage
+        let label = Text::new("Passwords page!");
 
         // Create a column layout, add the label and button to it
         let col = Column::new().push(label);
