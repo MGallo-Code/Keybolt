@@ -1,26 +1,38 @@
 use iced::Settings;
 use iced::pure::widget::{Button, Column, Container, Text};
 use iced::pure::Sandbox;
+use profile_page::ProfilePage;
+
+mod profile_page;
 
 fn main() -> Result<(), iced::Error> {
-    Counter::run(Settings::default())
+    PageView::run(Settings::default())
 }
 
-struct Counter {
-    count: i32,
+struct PageView {
+    current_view: Views,
+    profile_page: ProfilePage
 }
 
 #[derive(Debug, Clone, Copy)]
-enum CounterMessage {
-    Increment,
-    Decrement,
+pub enum Views {
+    MainPage,
+    ProfilePage
 }
 
-impl Sandbox for Counter {
-    type Message = CounterMessage;
+#[derive(Debug, Clone, Copy)]
+pub enum PageViewMsg {
+    ChangePage(Views),
+}
+
+impl Sandbox for PageView {
+    type Message = PageViewMsg;
 
     fn new() -> Self {
-        Counter { count: 0 }
+        PageView {
+            current_view: Views::MainPage,
+            profile_page: ProfilePage::new()
+        }
     }
 
     fn title(&self) -> String {
@@ -29,16 +41,19 @@ impl Sandbox for Counter {
 
     fn update(&mut self, message: Self::Message) {
         match message {
-            CounterMessage::Increment => self.count += 1,
-            CounterMessage::Decrement => self.count -= 1,
+            PageViewMsg::ChangePage(view) => self.current_view = view,
         }
     }
 
     fn view(&self) -> iced::pure::Element<Self::Message> {
-        let label = Text::new(format!("Count: {}", self.count));
-        let incr = Button::new("Increment").on_press(CounterMessage::Increment);
-        let decr = Button::new("Decrement").on_press(CounterMessage::Decrement);
-        let col = Column::new().push(incr).push(label).push(decr);
-        Container::new(col).center_x().center_y().width(iced::Length::Fill).height(iced::Length::Fill).into()
+        let label = Text::new(format!("View: {}", "Main"));
+        let profile_btn = Button::new("Profile").on_press(PageViewMsg::ChangePage(Views::ProfilePage));
+        let col = Column::new().push(label).push(profile_btn);
+        let main_page_layout = Container::new(col).center_x().center_y().width(iced::Length::Fill).height(iced::Length::Fill);
+
+        match self.current_view {
+            Views::MainPage => main_page_layout.into(),
+            Views::ProfilePage => self.profile_page.view()
+        }
     }
 }
