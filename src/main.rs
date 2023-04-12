@@ -2,6 +2,7 @@
 use iced::Settings;
 use iced::pure::widget::{Button, Column, Container, Row, Text};
 use iced::pure::Sandbox;
+use iced::Length::Units;
 
 // Include each page
 use profile_page::ProfilePage;
@@ -73,12 +74,19 @@ impl Sandbox for AppView {
 
     // Define the application's user interface layout based on its state
     fn view(&self) -> iced::pure::Element<Self::Message> {
+        let new_btn = |label, style| {
+            Button::new(label)
+                .width(Units(200))
+                .padding(10)
+                .style(style)
+        };
+
         // Nav column
-        let profile_btn = Button::new("Profile").on_press(AppMsg::ChangePage(Views::ProfilePage));
-        let main_page_btn = Button::new("Main Page").on_press(AppMsg::ChangePage(Views::MainPage));
-        let pwds_page_btn = Button::new("Passwords").on_press(AppMsg::ChangePage(Views::PasswordsPage));
-        let identities_page_btn = Button::new("Identities").on_press(AppMsg::ChangePage(Views::IdentitiesPage));
-        let cards_page_btn = Button::new("Cards").on_press(AppMsg::ChangePage(Views::CardsPage));
+        let profile_btn = new_btn("Profile", style::Button::Red).on_press(AppMsg::ChangePage(Views::ProfilePage));
+        let main_page_btn = new_btn("Main Page", style::Button::Green).on_press(AppMsg::ChangePage(Views::MainPage));
+        let pwds_page_btn = new_btn("Passwords", style::Button::Blue).on_press(AppMsg::ChangePage(Views::PasswordsPage));
+        let identities_page_btn = new_btn("Identities", style::Button::Red).on_press(AppMsg::ChangePage(Views::IdentitiesPage));
+        let cards_page_btn = new_btn("Cards", style::Button::Green).on_press(AppMsg::ChangePage(Views::CardsPage));
         let nav_col = Column::new()
             .push(profile_btn)
             .push(main_page_btn)
@@ -101,5 +109,34 @@ impl Sandbox for AppView {
         }
         // Add nav and window view together, display()
         Container::new(Row::new().push(nav_col).push(window_view)).into()
+    }
+}
+
+mod style {
+    use iced::{button, Background, Color};
+
+    pub enum Button {
+        Red,
+        Green,
+        Blue,
+    }
+
+    impl button::StyleSheet for Button {
+        fn active(&self) -> button::Style {
+            button::Style {
+                background: Some(
+                    Background::Color(
+                        match self {
+                            Button::Red => Color::from_rgb(1.0, 0.0, 0.0),
+                            Button::Green => Color::from_rgb(0.0, 1.0, 0.0),
+                            Button::Blue => Color::from_rgb(0.0, 0.0, 1.0),
+                        }
+                    )
+                ),
+                border_radius: 12.0,
+                text_color: Color::WHITE,
+                ..button::Style::default()
+            }
+        }
     }
 }
