@@ -168,33 +168,52 @@ pub mod theme_colors {
     // MAIN COLORS
     // (Background Color, Text Color)
     // light
-    pub const LIGHT_PRIMARY_COL: (Color, Color) = (Color::WHITE, Color::BLACK);
-    pub const LIGHT_SECONDARY_COL: (Color, Color) = (Color::BLACK, Color::WHITE);
-    pub const LIGHT_TERNARY_COL: (Color, Color) = (Color::from_rgb(0.0, 0.5, 0.0), Color::WHITE);
+    pub const LIGHT_PRIMARY: (Color, Color) = (Color::WHITE, Color::BLACK);
+    pub const LIGHT_SECONDARY: (Color, Color) = (Color::BLACK, Color::WHITE);
+    pub const LIGHT_TERNARY: (Color, Color) = (Color::from_rgb(0.0, 0.5, 0.0), Color::WHITE);
     // dark
-    pub const DARK_PRIMARY_COL: (Color, Color) = (Color::from_rgb(0.1, 0.1, 0.1), Color::WHITE);
-    pub const DARK_SECONDARY_COL: (Color, Color) = (Color::WHITE, Color::BLACK);
-    pub const DARK_TERNARY_COL: (Color, Color) = (Color::from_rgb(0.0, 0.5, 0.0), Color::WHITE);
-    // custom
-    pub const CUST_PRIMARY_COL: (Color, Color) = (Color::from_rgb(0.2, 0.2, 0.5), Color::WHITE);
-    pub const CUST_SECONDARY_COL: (Color, Color) = (Color::WHITE, Color::BLACK);
-    pub const CUST_TERNARY_COL: (Color, Color) = (Color::from_rgb(0.0, 0.5, 0.0), Color::WHITE);
+    pub const DARK_PRIMARY: (Color, Color) = (Color::from_rgb(0.1, 0.1, 0.1), Color::WHITE);
+    pub const DARK_SECONDARY: (Color, Color) = (Color::WHITE, Color::BLACK);
+    pub const DARK_TERNARY: (Color, Color) = (Color::from_rgb(0.0, 0.5, 0.0), Color::WHITE);
+    // default
+    pub const DEF_PRIMARY: (Color, Color) = (Color::from_rgb(0.2, 0.2, 0.5), Color::WHITE);
+    pub const DEF_SECONDARY: (Color, Color) = (Color::WHITE, Color::BLACK);
+    pub const DEF_TERNARY: (Color, Color) = (Color::from_rgb(0.0, 0.5, 0.0), Color::WHITE);
 
-    // CONTAINERS
-    pub const LIGHT_DEFAULT_CONTAINER: (Color, Color) = LIGHT_PRIMARY_COL;
-    pub const DARK_DEFAULT_CONTAINER: (Color, Color) = DARK_PRIMARY_COL;
-    pub const CUST_DEFAULT_CONTAINER: (Color, Color) = CUST_PRIMARY_COL;
-    // NAV
-    pub const LIGHT_NAV_CONTAINER: (Color, Color) = LIGHT_PRIMARY_COL;
-    pub const DARK_NAV_CONTAINER: (Color, Color) = DARK_PRIMARY_COL;
-    pub const CUST_NAV_CONTAINER: (Color, Color) = CUST_PRIMARY_COL;
+    pub mod container_colors {
+        use iced::Color;
+        use crate::theme_colors;
+
+        // CONTAINERS
+        pub const LIGHT_DEFAULT: (Color, Color) = theme_colors::LIGHT_PRIMARY;
+        pub const DARK_DEFAULT: (Color, Color) = theme_colors::DARK_PRIMARY;
+        pub const DEF_DEFAULT: (Color, Color) = theme_colors::DEF_PRIMARY;
+        // NAV
+        pub const LIGHT_NAV: (Color, Color) = theme_colors::LIGHT_PRIMARY;
+        pub const DARK_NAV: (Color, Color) = theme_colors::DARK_PRIMARY;
+        pub const DEF_NAV: (Color, Color) = theme_colors::DEF_PRIMARY;
+    }
+
+    pub mod button_colors {
+        use iced::Color;
+        use crate::theme_colors;
+
+        // CONTAINERS
+        pub const LIGHT_DEFAULT: (Color, Color) = theme_colors::LIGHT_PRIMARY;
+        pub const DARK_DEFAULT: (Color, Color) = theme_colors::DARK_PRIMARY;
+        pub const DEF_DEFAULT: (Color, Color) = theme_colors::DEF_PRIMARY;
+        // NAV
+        pub const LIGHT_NAV: (Color, Color) = theme_colors::LIGHT_PRIMARY;
+        pub const DARK_NAV: (Color, Color) = theme_colors::DARK_PRIMARY;
+        pub const DEF_NAV: (Color, Color) = theme_colors::DEF_PRIMARY;
+    }
 }
 
 
 pub mod style {
     use iced::{button, Background, Color, container};
     use crate::Theme;
-    use crate::theme_colors;
+    use crate::theme_colors::{button_colors, container_colors};
 
     pub struct Button {
         theme: Theme,
@@ -257,14 +276,14 @@ pub mod style {
         fn style(&self) -> container::Style {
             let (bg_color, text_color) = match self.container_type {
                 ContainerType::Default => match self.theme {
-                    Theme::Light => theme_colors::LIGHT_DEFAULT_CONTAINER,
-                    Theme::Dark => theme_colors::DARK_DEFAULT_CONTAINER,
-                    Theme::Custom => theme_colors::CUST_DEFAULT_CONTAINER,
+                    Theme::Light => container_colors::LIGHT_DEFAULT,
+                    Theme::Dark => container_colors::DARK_DEFAULT,
+                    Theme::Custom => container_colors::DEF_DEFAULT,
                 },
                 ContainerType::Nav => match self.theme {
-                    Theme::Light => theme_colors::LIGHT_NAV_CONTAINER,
-                    Theme::Dark => theme_colors::DARK_NAV_CONTAINER,
-                    Theme::Custom => theme_colors::CUST_NAV_CONTAINER,
+                    Theme::Light => container_colors::LIGHT_NAV,
+                    Theme::Dark => container_colors::DARK_NAV,
+                    Theme::Custom => container_colors::DEF_NAV,
                 },
             };
             
