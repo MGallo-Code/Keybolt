@@ -1,9 +1,8 @@
 use iced::Length;
-use iced::pure::widget::{Button, Column, Container, Text};
-use iced::pure::Element;
+use iced::widget::{Column, Container, Text};
+use iced::Element;
 
-// Import the Views enum and the AppMsg enum from the main application module
-use crate::Views;
+// Import AppMsg enum from the main application module
 use crate::AppMsg;
 
 // Define the CardsPage struct
