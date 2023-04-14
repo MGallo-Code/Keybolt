@@ -1,0 +1,37 @@
+{
+  "passwords": [
+    {
+      "title": "Example title",
+      "url": "https://example.com",
+      "username": "username",
+      "password": "password",
+      "otpauth": "otpauth",
+      "favorite": "true",
+      "tags": "tags",
+      "notes": "notes"
+    }
+  ],
+  "identities": [
+    {
+      "first_name": "John",
+      "middle_initial": "A",
+      "last_name": "Doe",
+      "address": "123 Main St",
+      "city": "Anytown",
+      "country": "USA",
+      "state": "CA",
+      "zipcode": 12345,
+      "phone": "1234567890",
+      "email": "john@example.com",
+      "apt_number": "3A"
+    }
+  ],
+  "cards": [
+    {
+      "name": "John Doe",
+      "card_number": "1234567812345678",
+      "expiration_date": "12-2025",
+      "security_code": 123
+    }
+  ]
+}

@@ -1,67 +1,93 @@
 use serde::{Deserialize, Serialize};
-use std::fs::{File, OpenOptions};
-use std::io::{Read, Write};
-use std::path::Path;
-use std::sync::RwLock;
+use std::fs::File;
+use std::io::prelude::*;
 
-use secrets::SecretBytes;
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct PasswordEntry {
-    pub title: String,
-    pub username: String,
-    pub password: SecretBytes,
+#[derive(Serialize, Deserialize, Debug)]
+struct Password {
+    title: String,
+    url: String,
+    username: String,
+    password: String,
+    otpauth: String,
+    favorite: String,
+    tags: String,
+    notes: String,
 }
 
-pub struct SecureJsonIO {
-    path: String,
-    entries: RwLock<Vec<PasswordEntry>>,
+#[derive(Serialize, Deserialize, Debug)]
+struct Identity {
+    first_name: String,
+    middle_initial: String,
+    last_name: String,
+    address: String,
+    city: String,
+    country: String,
+    state: String,
+    zipcode: i32,
+    phone: String,
+    email: String,
+    apt_number: String,
 }
 
-impl SecureJsonIO {
-    pub fn new(path: &str) -> Self {
-        SecureJsonIO {
-            path: path.to_string(),
-            entries: RwLock::new(Vec::new()),
-        }
-    }
+#[derive(Serialize, Deserialize, Debug)]
+struct Card {
+    name: String,
+    card_number: String,
+    expiration_date: String,
+    security_code: i32,
+}
 
-    pub fn load_entries(&self) -> Result<(), Box<dyn std::error::Error>> {
-        let path = Path::new(&self.path);
-        if !path.exists() {
-            return Ok(());
-        }
+#[derive(Serialize, Deserialize, Debug)]
+struct Data {
+    passwords: Vec<Password>,
+    identities: Vec<Identity>,
+    cards: Vec<Card>,
+}
 
-        let mut file = File::open(path)?;
-        let mut contents = Vec::new();
-        file.read_to_end(&mut contents)?;
+fn main() {
+    // Create sample data
+    let data = Data {
+        passwords: vec![
+            Password {
+                title: "Example title".to_string(),
+                url: "https://example.com".to_string(),
+                username: "username".to_string(),
+                password: "password".to_string(),
+                otpauth: "otpauth".to_string(),
+                favorite: true.to_string(),
+                tags: "tags".to_string(),
+                notes: "notes".to_string(),
+            },
+        ],
+        identities: vec![
+            Identity {
+                first_name: "John".to_string(),
+                middle_initial: "A".to_string(),
+                last_name: "Doe".to_string(),
+                address: "123 Main St".to_string(),
+                city: "Anytown".to_string(),
+                country: "USA".to_string(),
+                state: "CA".to_string(),
+                zipcode: 12345,
+                phone: "1234567890".to_string(),
+                email: "john@example.com".to_string(),
+                apt_number: "3A".to_string(),
+            },
+        ],
+        cards: vec![
+            Card {
+                name: "John Doe".to_string(),
+                card_number: "1234567812345678".to_string(),
+                expiration_date: "12-2025".to_string(),
+                security_code: 123,
+            },
+        ],
+    };
 
-        let entries: Vec<PasswordEntry> = serde_json::from_slice(&contents)?;
-        *self.entries.write().unwrap() = entries;
+    // Serialize data to JSON
+    let json_data = serde_json::to_string_pretty(&data).unwrap();
 
-        Ok(())
-    }
-
-    pub fn save_entries(&self) -> Result<(), Box<dyn std::error::Error>> {
-        let path = Path::new(&self.path);
-        let file = OpenOptions::new()
-            .write(true)
-            .create(true)
-            .truncate(true)
-            .open(path)?;
-
-        let entries = self.entries.read().unwrap();
-        let json = serde_json::to_vec_pretty(&*entries)?;
-        file.write_all(&json)?;
-
-        Ok(())
-    }
-
-    pub fn get_entries(&self) -> Vec<PasswordEntry> {
-        self.entries.read().unwrap().clone()
-    }
-
-    pub fn add_entry(&self, entry: PasswordEntry) {
-        self.entries.write().unwrap().push(entry);
-    }
+    // Save JSON data to a file
+    let mut file = File::create("data.json").unwrap();
+    file.write_all(json_data.as_bytes()).unwrap();
 }
