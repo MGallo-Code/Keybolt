@@ -2,11 +2,15 @@ use iced::{Application, Command, executor, Settings, Theme};
 use iced::widget::{Button, Column, Container, Row};
 use iced::Length;
 
+// Custom style imports
+mod styling;
+
 // Page View Imports
 use profile_page::ProfilePage;
 use passwords_page::PasswordsPage;
 use identities_page::IdentitiesPage;
 use cards_page::CardsPage;
+
 mod profile_page;
 mod passwords_page;
 mod identities_page;
@@ -45,7 +49,7 @@ pub enum AppMsg {
     ChangeTheme(Theme),
 }
 
-// Implement the Sandbox trait for the AppView struct
+// Implement the Application trait for the AppView struct
 impl Application for AppView {
     type Executor = executor::Default;
     type Message = AppMsg;
@@ -121,11 +125,16 @@ impl Application for AppView {
             .width(Length::Fixed(300.0))
             .padding(10)
             .on_press(AppMsg::ChangeTheme(Theme::Dark));
+        let cust_mode_btn = Button::new("Custom Mode")
+            .width(Length::Fixed(300.0))
+            .padding(10)
+            .on_press(AppMsg::ChangeTheme(styling::CustomTheme::theme()));
 
         let main_page_layout = Container::new(
             Column::new()
                 .push(light_mode_btn)
                 .push(dark_mode_btn)
+                .push(cust_mode_btn)
         ).center_x().center_y().width(iced::Length::Fill).height(iced::Length::Fill).into();
 
         let window_view;
@@ -155,11 +164,11 @@ impl Application for AppView {
         match self.current_theme {
             Theme::Light => Theme::Light,
             Theme::Dark => Theme::Dark,
-            _ => Theme::Dark,
+            _ => styling::CustomTheme::theme(),
         }
     }
 
     fn scale_factor(&self) -> f64 {
-        1.25
+        1.0
     }
 }
