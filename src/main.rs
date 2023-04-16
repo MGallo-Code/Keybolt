@@ -5,10 +5,10 @@ use iced::Length;
 // Page View Imports
 mod gui;
 use gui::pages::{
-    cards_page::CardsPage,
-    identities_page::IdentitiesPage,
-    passwords_page::PasswordsPage,
-    profile_page::ProfilePage,
+    cards_page,
+    identities_page,
+    passwords_page,
+    profile_page,
 };
 
 // Run application
@@ -18,23 +18,18 @@ fn main() -> Result<(), iced::Error> {
 }
 
 // The main struct representing the application's state and its views
-struct KeyboltApp {
+pub struct KeyboltApp {
     current_page: Pages,
     current_theme: Theme,
-    profile_page: ProfilePage,
-    passwords_page: PasswordsPage,
-    identities_page: IdentitiesPage,
-    cards_page: CardsPage,
 }
 
 // An enumeration of the different views in the application
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Pages {
-    MainPage,
-    ProfilePage,
-    PasswordsPage,
-    IdentitiesPage,
     CardsPage,
+    IdentitiesPage,
+    PasswordsPage,
+    ProfilePage,
 }
 
 // An enumeration of the messages the application can receive
@@ -54,12 +49,8 @@ impl Application for KeyboltApp {
     // Initialize a new AppView struct with default values
     fn new(_flags: ()) -> (KeyboltApp, Command<Self::Message>) {
         (KeyboltApp {
-            current_page: Pages::MainPage,
+            current_page: Pages::ProfilePage,
             current_theme: Theme::Light,
-            profile_page: ProfilePage::new(),
-            passwords_page: PasswordsPage::new(),
-            identities_page: IdentitiesPage::new(),
-            cards_page: CardsPage::new(),
         }, Command::none())
     }
 
@@ -89,7 +80,6 @@ impl Application for KeyboltApp {
 
         // Nav column
         let profile_page_btn = nav_btn("Profile", Pages::ProfilePage);
-        let main_page_btn = nav_btn("Main Page", Pages::MainPage);
         let passwords_page_btn = nav_btn("Passwords", Pages::PasswordsPage);
         let identities_page_btn = nav_btn("Identities", Pages::IdentitiesPage);
         let cards_page_btn = nav_btn("Cards", Pages::CardsPage);
@@ -98,46 +88,26 @@ impl Application for KeyboltApp {
         let nav = Container::new(
             Column::new()
                 .push(profile_page_btn)
-                .push(main_page_btn)
                 .push(passwords_page_btn)
                 .push(identities_page_btn)
                 .push(cards_page_btn)
         ).height(iced::Length::Fill);
         
-        // Main page layout
-
-        let light_mode_btn = Button::new("Light Mode")
-            .width(Length::Fixed(300.0))
-            .padding(10)
-            .on_press(AppMsg::ChangeTheme(Theme::Light));
-        let dark_mode_btn = Button::new("Dark Mode")
-            .width(Length::Fixed(300.0))
-            .padding(10)
-            .on_press(AppMsg::ChangeTheme(Theme::Dark));
-
-        let main_page_layout = Container::new(
-            Column::new()
-                .push(light_mode_btn)
-                .push(dark_mode_btn)
-        ).center_x().center_y().width(iced::Length::Fill).height(iced::Length::Fill).into();
 
         let window_view;
         // Set appropriate window view based on the current_view value
         match self.current_page {
-            Pages::MainPage => {
-                window_view = main_page_layout
-            },
             Pages::ProfilePage => {
-                window_view = self.profile_page.view()
+                window_view = profile_page::view_page(self)
             },
             Pages::PasswordsPage => {
-                window_view = self.passwords_page.view()
+                window_view = passwords_page::view_page(self)
             },
             Pages::IdentitiesPage => {
-                window_view = self.identities_page.view()
+                window_view = identities_page::view_page(self)
             },
             Pages::CardsPage => {
-                window_view = self.cards_page.view()
+                window_view = cards_page::view_page(self)
             },
         }
         // Add nav and window view together, display()

@@ -3,32 +3,21 @@ use iced::widget::{Column, Container, Text};
 use iced::Element;
 
 // Import AppMsg enum from the main application module
-use crate::AppMsg;
+use crate::{AppMsg, KeyboltApp};
 
-// Define the CardsPage struct
-pub struct CardsPage;
+// Define the user interface layout for the CardsPage
+pub fn view_page(_keybolt: &KeyboltApp) -> Element<AppMsg> {
+    // Create a text label for the CardsPage
+    let label = Text::new("Cards page!");
 
-// Implement methods for the CardsPage struct
-impl CardsPage {
-    // Create a new instance of the CardsPage struct
-    pub fn new() -> Self {
-        CardsPage
-    }
+    // Create a column layout, add the label and button to it
+    let col = Column::new().push(label);
 
-    // Define the user interface layout for the CardsPage
-    pub fn view(&self) -> Element<AppMsg> {
-        // Create a text label for the CardsPage
-        let label = Text::new("Cards page!");
-
-        // Create a column layout, add the label and button to it
-        let col = Column::new().push(label);
-
-        // Create a container to hold the column layout, set its dimensions and position, and return it as an Element
-        Container::new(col)
-            .width(Length::Fill)
-            .height(Length::Fill)
-            .center_x()
-            .center_y()
-            .into()
-    }
+    // Create a container to hold the column layout, set its dimensions and position, and return it as an Element
+    Container::new(col)
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .center_x()
+        .center_y()
+        .into()
 }
