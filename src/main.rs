@@ -2,19 +2,14 @@ use iced::{Application, Command, executor, Settings, Theme};
 use iced::widget::{Button, Column, Container, Row};
 use iced::Length;
 
-// Custom style imports
-mod styling;
-
 // Page View Imports
-use profile_page::ProfilePage;
-use passwords_page::PasswordsPage;
-use identities_page::IdentitiesPage;
-use cards_page::CardsPage;
-
-mod profile_page;
-mod passwords_page;
-mod identities_page;
-mod cards_page;
+mod gui;
+use gui::pages::{
+    cards_page::CardsPage,
+    identities_page::IdentitiesPage,
+    passwords_page::PasswordsPage,
+    profile_page::ProfilePage,
+};
 
 // Run application
 fn main() -> Result<(), iced::Error> {
@@ -85,17 +80,11 @@ impl Application for AppView {
     // Define the application's user interface layout based on its state
     fn view(&self) -> iced::Element<Self::Message> {
         let nav_btn = |label, page| {
-            if self.current_page == page {
-                Button::new(label)
-                    .width(Length::Fixed(300.0))
-                    .padding(10)
-                    .on_press(AppMsg::ChangePage(page))
-            } else {
-                Button::new(label)
-                    .width(Length::Fixed(300.0))
-                    .padding(10)
-                    .on_press(AppMsg::ChangePage(page))
-            }
+            Button::new(label)
+            .width(Length::Fixed(300.0))
+            .padding(10)
+            .on_press(AppMsg::ChangePage(page))
+            // .style(Box::new(styling::CustomButtonStyle))
         };
 
         // Nav column
@@ -125,16 +114,11 @@ impl Application for AppView {
             .width(Length::Fixed(300.0))
             .padding(10)
             .on_press(AppMsg::ChangeTheme(Theme::Dark));
-        let cust_mode_btn = Button::new("Custom Mode")
-            .width(Length::Fixed(300.0))
-            .padding(10)
-            .on_press(AppMsg::ChangeTheme(styling::CustomTheme::theme()));
 
         let main_page_layout = Container::new(
             Column::new()
                 .push(light_mode_btn)
                 .push(dark_mode_btn)
-                .push(cust_mode_btn)
         ).center_x().center_y().width(iced::Length::Fill).height(iced::Length::Fill).into();
 
         let window_view;
@@ -164,7 +148,7 @@ impl Application for AppView {
         match self.current_theme {
             Theme::Light => Theme::Light,
             Theme::Dark => Theme::Dark,
-            _ => styling::CustomTheme::theme(),
+            _ => Theme::Light,
         }
     }
 
