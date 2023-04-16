@@ -1,9 +1,8 @@
 //! Module defining the constants used for aesthetic purposes (colors, borders...)
 
 use iced::{Color, Font};
-// use plotters::style::RGBColor;
 
-use crate::gui::styles::types::palette::{Palette};
+use crate::gui::styles::types::palette::Palette;
 use crate::gui::styles::types::style_type::StyleType;
 
 // night theme
@@ -160,44 +159,6 @@ pub const MON_AMOUR_STYLE: Palette = Palette {
         ..BUTTONS_MON_AMOUR
     },
 };
-
-// pub const SARASA_MONO_SC_BOLD: Font = Font::External {
-//     name: "sarasa-mono-sc-bold",
-//     bytes: include_bytes!("../../../resources/fonts/subset/sarasa-mono-sc-bold.subset.ttf"),
-// };
-
-// pub fn get_font(style: StyleType) -> Font {
-//     match to_rgb_color(get_colors(style).text_body) {
-//         RGBColor(255, 255, 255) => Font::Default,
-//         _ => SARASA_MONO_SC_BOLD,
-//     }
-// }
-
-// pub fn get_font_headers(style: StyleType) -> Font {
-//     match to_rgb_color(get_colors(style).text_headers) {
-//         RGBColor(255, 255, 255) => Font::Default,
-//         _ => SARASA_MONO_SC_BOLD,
-//     }
-// }
-
-pub fn get_color_mix_chart(style: StyleType) -> f64 {
-    match style {
-        StyleType::Night | StyleType::DeepSea => 0.3,
-        StyleType::Day | StyleType::MonAmour => 0.8,
-    }
-}
-
-// //font to display icons
-// pub const ICONS: Font = Font::External {
-//     name: "icons",
-//     bytes: include_bytes!("../../../resources/fonts/subset/icons.ttf"),
-// };
-
-// // palettes pictures
-// pub const YETI_DAY: &[u8] = include_bytes!("../../../resources/palettes/YetiDay.png");
-// pub const YETI_NIGHT: &[u8] = include_bytes!("../../../resources/palettes/YetiNight.png");
-// pub const DEEP_SEA: &[u8] = include_bytes!("../../../resources/palettes/DeepSea.png");
-// pub const MON_AMOUR: &[u8] = include_bytes!("../../../resources/palettes/MonAmour.png");
 
 // font sizes
 pub const FONT_SIZE_FOOTER: f32 = 18.0;

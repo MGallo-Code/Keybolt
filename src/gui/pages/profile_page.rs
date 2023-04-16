@@ -4,7 +4,7 @@ use iced::widget::{Column, Container, Text};
 use iced::Element;
 
 // Import Message enum from the main application module
-use crate::gui::keybolt::{Message};
+use crate::gui::types::message::Message;
 use crate::gui::styles::types::{
     style_type::StyleType,
     style_tuple::StyleTuple,
@@ -24,6 +24,7 @@ pub fn view_page(style: StyleType) -> Element<'static, Message> {
     .align_y(Vertical::Center)
     .width(Length::Fill)
     .style(<StyleTuple as Into<iced::theme::Container>>::into(
-        StyleTuple(style, ElementType::Standard),
-    )).into()
+        StyleTuple(style, ElementType::Default),
+    ))
+    .into()
 }
