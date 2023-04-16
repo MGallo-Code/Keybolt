@@ -14,11 +14,11 @@ use gui::pages::{
 // Run application
 fn main() -> Result<(), iced::Error> {
     // Start the application with default settings
-    AppView::run(Settings::default())
+    KeyboltApp::run(Settings::default())
 }
 
 // The main struct representing the application's state and its views
-struct AppView {
+struct KeyboltApp {
     current_page: Pages,
     current_theme: Theme,
     profile_page: ProfilePage,
@@ -45,15 +45,15 @@ pub enum AppMsg {
 }
 
 // Implement the Application trait for the AppView struct
-impl Application for AppView {
+impl Application for KeyboltApp {
     type Executor = executor::Default;
     type Message = AppMsg;
     type Theme = Theme;
     type Flags = ();
 
     // Initialize a new AppView struct with default values
-    fn new(_flags: ()) -> (AppView, Command<Self::Message>) {
-        (AppView {
+    fn new(_flags: ()) -> (KeyboltApp, Command<Self::Message>) {
+        (KeyboltApp {
             current_page: Pages::MainPage,
             current_theme: Theme::Light,
             profile_page: ProfilePage::new(),
