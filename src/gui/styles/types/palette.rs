@@ -1,10 +1,11 @@
+//! Module defining the `Colors` struct, which defines the colors in use in the GUI.
+
 use iced::Color;
 
-use crate::gui::styles::types::style_type::StyleType;
 use crate::gui::styles::style_constants::{
-    LIGHT_STYLE,
-    DARK_STYLE,
+    DAY_STYLE, DEEP_SEA_STYLE, MON_AMOUR_STYLE, NIGHT_STYLE,
 };
+use crate::gui::styles::types::style_type::StyleType;
 
 /// Set of colors to apply to GUI
 ///
@@ -38,10 +39,32 @@ pub struct Palette {
 
 pub fn get_colors(style: StyleType) -> Palette {
     match style {
-        StyleType::Light => LIGHT_STYLE,
-        StyleType::Dark => DARK_STYLE,
+        StyleType::Night => NIGHT_STYLE,
+        StyleType::Day => DAY_STYLE,
+        StyleType::DeepSea => DEEP_SEA_STYLE,
+        StyleType::MonAmour => MON_AMOUR_STYLE,
     }
 }
+
+// #[allow(clippy::cast_possible_truncation)]
+// #[allow(clippy::cast_sign_loss)]
+// pub fn to_rgb_color(color: Color) -> RGBColor {
+//     if color.r <= 1.0
+//         && color.r >= 0.0
+//         && color.g <= 1.0
+//         && color.g >= 0.0
+//         && color.b <= 1.0
+//         && color.b >= 0.0
+//     {
+//         RGBColor(
+//             (color.r * 255.0) as u8,
+//             (color.g * 255.0) as u8,
+//             (color.b * 255.0) as u8,
+//         )
+//     } else {
+//         RGBColor(0, 0, 0) // Black
+//     }
+// }
 
 /// Returns the average of two colors; color intensity is fixed to 100%
 pub fn mix_colors(color_1: Color, color_2: Color) -> Color {
@@ -55,6 +78,6 @@ pub fn mix_colors(color_1: Color, color_2: Color) -> Color {
 
 impl Default for Palette {
     fn default() -> Self {
-        get_colors(StyleType::Light)
+        get_colors(StyleType::Night)
     }
 }

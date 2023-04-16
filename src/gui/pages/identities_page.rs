@@ -2,11 +2,16 @@ use iced::Length;
 use iced::widget::{Column, Container, Text};
 use iced::Element;
 
-// Import AppMsg enum from the main application module
-use crate::{AppMsg, KeyboltApp};
+// Import Message enum from the main application module
+use crate::gui::keybolt::{Message};
+use crate::gui::styles::types::{
+    style_type::StyleType,
+    style_tuple::StyleTuple,
+    element_type::ElementType,
+};
 
 // Define the user interface layout for the IdentitiesPage
-pub fn view_page(_keybolt: &KeyboltApp) -> Element<AppMsg> {
+pub fn view_page(style: StyleType) -> Element<'static, Message> {
     // Create a text label for the IdentitiesPage
     let label = Text::new("Identities page!");
 
