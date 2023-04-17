@@ -65,7 +65,6 @@ impl Application for KeyboltApp {
         let nav_btn = |label, page| {
             Button::new(
                 Text::new(label)
-                    .font(JOSEFIN_SANS_REG)
                     .size(FONT_SIZE_NAV)
                 )
                 .width(Length::Fixed(300.0))
@@ -126,13 +125,9 @@ impl Application for KeyboltApp {
             },
         }
         // Add nav and window view together, display()
-        Container::new(
-            Row::new()
-                .push(nav)
-                .push(window_view),
-        )
-        .style(<StyleTuple as Into<iced::theme::Container>>::into(
-            StyleTuple(style, ElementType::Default),
-        )).into()
+        Row::new()
+            .push(nav)
+            .push(window_view)
+            .into()
     }
 } 

@@ -46,7 +46,7 @@ pub fn view_page(style: StyleType) -> Element<'static, Message> {
         .center_x()
         .center_y()
         .style(<StyleTuple as Into<iced::theme::Container>>::into(
-            StyleTuple(style, ElementType::Default),
+            StyleTuple(style, ElementType::ItemListColumn),
         ))
         .into()
 }
