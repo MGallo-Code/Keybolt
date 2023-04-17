@@ -1,3 +1,4 @@
 /target
 /.vscode
 /src/pwds.json
+*/.DS_Store
