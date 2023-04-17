@@ -13,7 +13,7 @@ use crate::gui::styles::types::{
 // Define the user interface layout for the CardsPage
 pub fn view_page(style: StyleType) -> Element<'static, Message> {
     // Create a text label for the CardsPage
-    let label = Text::new("Cards page!");
+    let label = Text::new("Cards page");
 
     // Create a column layout, add the label and button to it
     let col = Column::new().push(label);

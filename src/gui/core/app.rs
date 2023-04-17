@@ -43,7 +43,7 @@ impl Application for KeyboltApp {
     fn new(_flags: Self::Flags) -> (Self, Command<Message>) {
         (KeyboltApp {
             current_page: Pages::ProfilePage,
-            current_style: style_type::StyleType::Fiord,
+            current_style: style_type::StyleType::Default,
         }, Command::none())
     }
 

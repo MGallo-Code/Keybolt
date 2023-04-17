@@ -27,7 +27,7 @@ pub fn view_page(style: StyleType) -> Element<'static, Message> {
     };
 
     // Create a text label for the PasswordsPage
-    let label = Text::new("Passwords page!");
+    let label = Text::new("Passwords page");
     let item1 = list_item("Item 1", false);
     let item2 = list_item("Item 2", true);
     let item3 = list_item("Item 3", false);

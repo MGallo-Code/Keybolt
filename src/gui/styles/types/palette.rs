@@ -1,6 +1,6 @@
 use iced::Color;
 use crate::gui::styles::style_constants::{
-    DEFAULT_STYLE,
+    DEFAULT_STYLE, DARK_STYLE, VIBRANT_STYLE, FJORD_STYLE,
 };
 use crate::gui::styles::types::style_type::StyleType;
 
@@ -36,9 +36,9 @@ pub struct Palette {
 pub fn get_colors(style: StyleType) -> Palette {
     match style {
         StyleType::Default => DEFAULT_STYLE,
-        StyleType::Dark => DEFAULT_STYLE,
-        StyleType::Light => DEFAULT_STYLE,
-        StyleType::Fiord => DEFAULT_STYLE,
+        StyleType::Dark => DARK_STYLE,
+        StyleType::Vibrant => VIBRANT_STYLE,
+        StyleType::Fjord => FJORD_STYLE,
     }
 }
 

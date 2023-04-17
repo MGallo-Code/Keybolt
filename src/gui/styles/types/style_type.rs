@@ -5,8 +5,8 @@ use serde::{Deserialize, Serialize};
 pub enum StyleType {
     Default,
     Dark,
-    Light,
-    Fiord,
+    Vibrant,
+    Fjord,
 }
 
 impl Default for StyleType {

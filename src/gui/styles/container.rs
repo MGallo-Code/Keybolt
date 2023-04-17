@@ -21,7 +21,7 @@ impl iced::widget::container::StyleSheet for StyleTuple {
         Appearance {
             text_color: Some(
                 match self.1 {
-                    ElementType::NavHeader => colors.selected_item_bg,
+                    ElementType::NavHeader => colors.primary_accent,
                     _ => colors.primary_text,
                 }
             ),

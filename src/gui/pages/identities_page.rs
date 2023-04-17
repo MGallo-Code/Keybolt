@@ -13,7 +13,7 @@ use crate::gui::styles::types::{
 // Define the user interface layout for the IdentitiesPage
 pub fn view_page(style: StyleType) -> Element<'static, Message> {
     // Create a text label for the IdentitiesPage
-    let label = Text::new("Identities page!");
+    let label = Text::new("Identities page");
 
     // Create a column layout, add the label and button to it
     let col = Column::new().push(label);

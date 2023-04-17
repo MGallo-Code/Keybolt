@@ -13,10 +13,16 @@ use crate::gui::styles::types::{
 // Define the user interface layout for the ProfilePage
 pub fn view_page(style: StyleType) -> Element<'static, Message> {
     // Create a text label for the ProfilePage
-    let label = Text::new("Profile Page!");
-    let light_mode_btn = Button::new("Light Mode")
+    let label = Text::new("Profile Page");
+    let fjord_mode_btn = Button::new("Fjord Mode")
         .width(Length::Fixed(200.0))
-        .on_press(Message::ChangeStyle(StyleType::Light))
+        .on_press(Message::ChangeStyle(StyleType::Fjord))
+        .style(<StyleTuple as Into<iced::theme::Button>>::into(
+            StyleTuple(style, ElementType::Default),
+        ));
+    let vibrant_mode_btn = Button::new("Vibrant Mode")
+        .width(Length::Fixed(200.0))
+        .on_press(Message::ChangeStyle(StyleType::Vibrant))
         .style(<StyleTuple as Into<iced::theme::Button>>::into(
             StyleTuple(style, ElementType::Default),
         ));
@@ -35,7 +41,8 @@ pub fn view_page(style: StyleType) -> Element<'static, Message> {
 
     let col = Column::new()
         .push(label)
-        .push(light_mode_btn)
+        .push(fjord_mode_btn)
+        .push(vibrant_mode_btn)
         .push(dark_mode_btn)
         .push(default_mode_btn);
 
