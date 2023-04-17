@@ -1,5 +1,5 @@
 //! Module defining the application structure: messages, updates, subscriptions.
-use iced::widget::{Container, Row, Button, Column};
+use iced::widget::{Container, Row, Button, Column, Text};
 use iced::{executor, Application, Command, Element, Theme, Length};
 
 use crate::gui::core::{
@@ -12,6 +12,7 @@ use crate::gui::pages::{
     passwords_page,
     profile_page,
 };
+use crate::gui::styles::style_constants::{JOSEFIN_SANS_REG, FONT_SIZE_NAV, FONT_SIZE_NAV_TITLE};
 use crate::gui::styles::types::{
     element_type::ElementType,
     style_tuple::StyleTuple,
@@ -39,7 +40,7 @@ impl Application for KeyboltApp {
     type Theme = Theme;
     type Flags = ();
 
-    fn new(flags: Self::Flags) -> (Self, Command<Message>) {
+    fn new(_flags: Self::Flags) -> (Self, Command<Message>) {
         (KeyboltApp {
             current_page: Pages::ProfilePage,
             current_style: style_type::StyleType::Dark,
@@ -63,7 +64,11 @@ impl Application for KeyboltApp {
 
         let nav_btn = |label, page| {
             if self.current_page == page {
-                Button::new(label)
+                Button::new(
+                    Text::new(label)
+                        .font(JOSEFIN_SANS_REG)
+                        .size(FONT_SIZE_NAV)
+                    )
                     .width(Length::Fixed(300.0))
                     .padding(10)
                     .on_press(Message::ChangePage(page))
@@ -71,17 +76,24 @@ impl Application for KeyboltApp {
                         StyleTuple(style, ElementType::NavActive),
                     ))
             } else {
-                Button::new(label)
-                .width(Length::Fixed(300.0))
-                .padding(10)
-                .on_press(Message::ChangePage(page))
-                .style(<StyleTuple as Into<iced::theme::Button>>::into(
-                    StyleTuple(style, ElementType::NavInactive),
+                Button::new(
+                    Text::new(label)
+                        .font(JOSEFIN_SANS_REG)
+                        .size(FONT_SIZE_NAV)
+                    )
+                    .width(Length::Fixed(300.0))
+                    .padding(10)
+                    .on_press(Message::ChangePage(page))
+                    .style(<StyleTuple as Into<iced::theme::Button>>::into(
+                        StyleTuple(style, ElementType::NavInactive),
                 ))
             }
         };
 
         // Nav column
+        let keybolt_title = Text::new("Keybolt")
+            .font(JOSEFIN_SANS_REG)
+            .size(FONT_SIZE_NAV_TITLE);
         let profile_page_btn = nav_btn("Profile", Pages::ProfilePage);
         let passwords_page_btn = nav_btn("Passwords", Pages::PasswordsPage);
         let identities_page_btn = nav_btn("Identities", Pages::IdentitiesPage);
@@ -90,6 +102,7 @@ impl Application for KeyboltApp {
         // Create nav container
         let nav = Container::new(
             Column::new()
+                .push(keybolt_title)
                 .push(profile_page_btn)
                 .push(passwords_page_btn)
                 .push(identities_page_btn)

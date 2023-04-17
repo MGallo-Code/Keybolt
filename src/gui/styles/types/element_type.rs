@@ -4,4 +4,5 @@ pub enum ElementType {
     Default,
     NavActive,
     NavInactive,
+    NavTitle,
 }

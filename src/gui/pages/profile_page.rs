@@ -1,5 +1,4 @@
 use iced::Length;
-use iced::alignment::Vertical;
 use iced::widget::{Column, Container, Text, Button};
 use iced::Element;
 
