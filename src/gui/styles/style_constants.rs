@@ -6,30 +6,30 @@ use crate::gui::styles::types::palette::Palette;
 use crate::gui::styles::types::style_type::StyleType;
 
 // night theme
-const PRIMARY_NIGHT: Color = Color {
+const PRIMARY_DARK: Color = Color {
     r: 0.2,
     g: 0.2,
     b: 0.2,
     a: 1.0,
 };
-const SECONDARY_NIGHT: Color = Color {
+const SECONDARY_DARK: Color = Color {
     r: 0.7,
     g: 0.35,
     b: 0.0,
     a: 1.0,
 };
-const BUTTONS_NIGHT: Color = Color {
+const BUTTONS_DARK: Color = Color {
     r: 0.1,
     g: 0.1,
     b: 0.1,
     a: 1.0,
 };
-pub const NIGHT_STYLE: Palette = Palette {
-    primary: PRIMARY_NIGHT,
-    secondary: SECONDARY_NIGHT,
-    buttons: BUTTONS_NIGHT,
-    incoming: SECONDARY_NIGHT,
-    outgoing: SECONDARY_DAY,
+pub const DARK_STYLE: Palette = Palette {
+    primary: PRIMARY_DARK,
+    secondary: SECONDARY_DARK,
+    buttons: BUTTONS_DARK,
+    incoming: SECONDARY_DARK,
+    outgoing: SECONDARY_LIGHT,
     text_headers: Color::BLACK,
     text_body: Color::WHITE,
     round_borders: Color {
@@ -43,25 +43,25 @@ pub const NIGHT_STYLE: Palette = Palette {
 };
 
 // day theme
-const PRIMARY_DAY: Color = Color::WHITE;
-const SECONDARY_DAY: Color = Color {
+const PRIMARY_LIGHT: Color = Color::WHITE;
+const SECONDARY_LIGHT: Color = Color {
     r: 0.0,
     g: 0.35,
     b: 0.7,
     a: 1.0,
 };
-const BUTTONS_DAY: Color = Color {
+const BUTTONS_LIGHT: Color = Color {
     r: 0.8,
     g: 0.8,
     b: 0.8,
     a: 1.0,
 };
-pub const DAY_STYLE: Palette = Palette {
-    primary: PRIMARY_DAY,
-    secondary: SECONDARY_DAY,
-    buttons: BUTTONS_DAY,
-    incoming: SECONDARY_DAY,
-    outgoing: SECONDARY_NIGHT,
+pub const LIGHT_STYLE: Palette = Palette {
+    primary: PRIMARY_LIGHT,
+    secondary: SECONDARY_LIGHT,
+    buttons: BUTTONS_LIGHT,
+    incoming: SECONDARY_LIGHT,
+    outgoing: SECONDARY_DARK,
     text_headers: Color::WHITE,
     text_body: Color::BLACK,
     round_borders: Color {

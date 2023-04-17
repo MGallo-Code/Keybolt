@@ -3,7 +3,7 @@
 use iced::Color;
 
 use crate::gui::styles::style_constants::{
-    DAY_STYLE, NIGHT_STYLE,
+    LIGHT_STYLE, DARK_STYLE,
 };
 use crate::gui::styles::types::style_type::StyleType;
 
@@ -39,8 +39,8 @@ pub struct Palette {
 
 pub fn get_colors(style: StyleType) -> Palette {
     match style {
-        StyleType::Night => NIGHT_STYLE,
-        StyleType::Day => DAY_STYLE,
+        StyleType::Dark => DARK_STYLE,
+        StyleType::Light => LIGHT_STYLE,
     }
 }
 
@@ -56,6 +56,6 @@ pub fn mix_colors(color_1: Color, color_2: Color) -> Color {
 
 impl Default for Palette {
     fn default() -> Self {
-        get_colors(StyleType::Night)
+        get_colors(StyleType::Dark)
     }
 }

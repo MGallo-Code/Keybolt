@@ -3,7 +3,7 @@ use iced::widget::{Column, Container, Text};
 use iced::Element;
 
 // Import Message enum from the main application module
-use crate::gui::types::message::Message;
+use crate::gui::core::message::Message;
 use crate::gui::styles::types::{
     style_type::StyleType,
     style_tuple::StyleTuple,

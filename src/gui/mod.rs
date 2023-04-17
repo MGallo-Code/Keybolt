@@ -1,4 +1,3 @@
-pub mod app;
+pub mod core;
 pub mod pages;
 pub mod styles;
-pub mod types;

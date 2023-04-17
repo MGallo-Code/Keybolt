@@ -1,12 +1,9 @@
 use iced::{Application, Settings};
+use iced::window::{self, PlatformSpecific, Position};
 
 mod gui;
-use crate::gui::types::keybolt_app::KeyboltApp;
-
-use iced::window::{PlatformSpecific, Position};
-use iced::window;
+use gui::core::app::KeyboltApp;
 use gui::styles::style_constants::FONT_SIZE_BODY;
-
 
 // Run application
 fn main() -> Result<(), iced::Error> {
@@ -14,9 +11,9 @@ fn main() -> Result<(), iced::Error> {
     KeyboltApp::run(Settings {
         id: None,
         window: window::Settings {
-            size: (1190, 670), // start size
+            size: (1000, 670),
             position: Position::Centered,
-            min_size: Some((1190, 600)), // min size allowed
+            min_size: Some((800, 600)),
             max_size: None,
             visible: true,
             resizable: true,
@@ -26,13 +23,14 @@ fn main() -> Result<(), iced::Error> {
             icon: None,
             platform_specific: PlatformSpecific::default(),
         },
-        flags: KeyboltApp::new(),
+        flags: (),
         default_font: Some(include_bytes!(
-            "../resources/fonts/sarasa-mono-sc-regular.subset.ttf"
+            "../resources/fonts/JosefinSans-Regular.ttf"
         )),
         default_text_size: FONT_SIZE_BODY,
         text_multithreading: true,
         antialiasing: false,
+
         exit_on_close_request: true,
         try_opengles_first: false,
     })

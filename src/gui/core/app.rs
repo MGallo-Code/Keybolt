@@ -1,35 +1,49 @@
 //! Module defining the application structure: messages, updates, subscriptions.
-//!
-//! It also is a wrapper of gui's main two pages: initial and run page.
-
 use iced::widget::{Container, Row, Button, Column};
 use iced::{executor, Application, Command, Element, Theme, Length};
 
-use crate::gui::types::{
+use crate::gui::core::{
     message::Message,
-    keybolt_app::KeyboltApp,
 };
 
-use super::pages::{
+use crate::gui::pages::{
     cards_page,
     identities_page,
     passwords_page,
     profile_page,
 };
-use super::styles::types::{
+use crate::gui::styles::types::{
     element_type::ElementType,
     style_tuple::StyleTuple,
 };
-use super::types::keybolt_app::Pages;
+
+use crate::gui::styles::types::style_type;
+
+// An enumeration of the different views in the application
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Pages {
+    CardsPage,
+    IdentitiesPage,
+    PasswordsPage,
+    ProfilePage,
+}
+
+pub struct KeyboltApp {
+    pub current_page: Pages,
+    pub current_style: style_type::StyleType,
+}
 
 impl Application for KeyboltApp {
     type Executor = executor::Default;
     type Message = Message;
     type Theme = Theme;
-    type Flags = KeyboltApp;
+    type Flags = ();
 
-    fn new(flags: KeyboltApp) -> (KeyboltApp, Command<Message>) {
-        (flags, iced::window::maximize(true))
+    fn new(flags: Self::Flags) -> (Self, Command<Message>) {
+        (KeyboltApp {
+            current_page: Pages::ProfilePage,
+            current_style: style_type::StyleType::Dark,
+        }, Command::none())
     }
 
     fn title(&self) -> String {
@@ -37,7 +51,11 @@ impl Application for KeyboltApp {
     }
 
     fn update(&mut self, message: Message) -> Command<Message> {
-        self.update(message)
+        match message {
+            Message::ChangePage(page) => self.current_page = page,
+            Message::ChangeStyle(style) => self.current_style = style,
+        }
+        Command::none()
     }
 
     fn view(&self) -> Element<Message> {
