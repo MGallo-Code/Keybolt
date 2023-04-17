@@ -22,6 +22,7 @@ impl button::StyleSheet for StyleTuple {
             background: Some(Background::Color(
                 match self.1 {
                     ElementType::NavButton => colors.nav_bg,
+                    ElementType::NavButtonSelected => colors.secondary_accent,
                     ElementType::ItemListEntry => colors.item_list_bg,
                     ElementType::SelectedItem => colors.selected_item_bg,
                     ElementType::Button => colors.buttons,
@@ -33,6 +34,7 @@ impl button::StyleSheet for StyleTuple {
             shadow_offset: Vector::new(0.0, 0.0),
             text_color: match self.1 {
                 ElementType::NavButton => colors.nav_text,
+                ElementType::NavButtonSelected => colors.nav_bg,
                 ElementType::Button => colors.button_text,
                 _ => colors.primary_text,
             },
@@ -49,7 +51,7 @@ impl button::StyleSheet for StyleTuple {
             border_width: 0.0,
             border_color: colors.border,
             text_color: match self.1 {
-                ElementType::NavButton => colors.nav_text,
+                ElementType::NavButton => colors.nav_bg,
                 ElementType::Button => colors.button_text,
                 _ => colors.primary_text,
             },

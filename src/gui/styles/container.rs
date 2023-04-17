@@ -19,7 +19,12 @@ impl iced::widget::container::StyleSheet for StyleTuple {
     fn appearance(&self, _: &Self::Style) -> Appearance {
         let colors = get_colors(self.0);
         Appearance {
-            text_color: Some(colors.primary_text),
+            text_color: Some(
+                match self.1 {
+                    ElementType::NavHeader => colors.selected_item_bg,
+                    _ => colors.primary_text,
+                }
+            ),
             background: Some(Background::Color(
                 match self.1 {
                     ElementType::NavColumn => colors.nav_bg,

@@ -12,7 +12,7 @@ use crate::gui::pages::{
     passwords_page,
     profile_page,
 };
-use crate::gui::styles::style_constants::{JOSEFIN_SANS_REG, FONT_SIZE_NAV, FONT_SIZE_NAV_TITLE};
+use crate::gui::styles::style_constants::{JOSEFIN_SANS_REG, FONT_SIZE_NAV, FONT_SIZE_NAV_TITLE, RALEWAY_BOLD};
 use crate::gui::styles::types::{
     element_type::ElementType,
     style_tuple::StyleTuple,
@@ -65,6 +65,7 @@ impl Application for KeyboltApp {
         let nav_btn = |label, page| {
             Button::new(
                 Text::new(label)
+                    .font(RALEWAY_BOLD)
                     .size(FONT_SIZE_NAV)
                 )
                 .width(Length::Fixed(300.0))

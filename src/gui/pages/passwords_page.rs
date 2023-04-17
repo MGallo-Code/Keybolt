@@ -23,6 +23,7 @@ pub fn view_page(style: StyleType) -> Element<'static, Message> {
                     StyleTuple(style, ElementType::ItemListEntry)
                 }
             ))
+            .on_press(Message::ChangeStyle(StyleType::Default))
     };
 
     // Create a text label for the PasswordsPage

@@ -3,21 +3,21 @@ use crate::gui::styles::types::palette::Palette;
 
 pub const DEFAULT_STYLE: Palette = Palette {
     nav_bg: Color {
-        r: 0.05,
-        g: 0.11,
-        b: 0.16,
+        r: 0.1,
+        g: 0.18,
+        b: 0.24,
         a: 1.0,
     },
     item_list_bg: Color {
-        r: 0.97,
-        g: 0.97,
-        b: 0.97,
+        r: 0.95,
+        g: 0.95,
+        b: 0.95,
         a: 1.0,
     },
     selected_item_bg: Color {
-        r: 0.87,
-        g: 0.87,
-        b: 0.87,
+        r: 0.9,
+        g: 0.9,
+        b: 0.9,
         a: 1.0,
     },
     third_col_bg: Color {
@@ -27,9 +27,9 @@ pub const DEFAULT_STYLE: Palette = Palette {
         a: 1.0,
     },
     nav_text: Color {
-        r: 0.8,
-        g: 0.8,
-        b: 0.8,
+        r: 0.7,
+        g: 0.7,
+        b: 0.7,
         a: 1.0,
     },
     primary_text: Color {
@@ -39,9 +39,9 @@ pub const DEFAULT_STYLE: Palette = Palette {
         a: 1.0,
     },
     primary_accent: Color {
-        r: 0.2,
+        r: 0.3,
         g: 0.6,
-        b: 0.86,
+        b: 0.8,
         a: 1.0,
     },
     secondary_accent: Color {
@@ -51,9 +51,9 @@ pub const DEFAULT_STYLE: Palette = Palette {
         a: 1.0,
     },
     buttons: Color {
-        r: 0.2,
+        r: 0.3,
         g: 0.6,
-        b: 0.86,
+        b: 0.8,
         a: 1.0,
     },
     button_text: Color {
@@ -70,10 +70,19 @@ pub const DEFAULT_STYLE: Palette = Palette {
     },
 };
 
-
 pub const JOSEFIN_SANS_REG: Font = Font::External {
     name: "josefin-sans-regular",
     bytes: include_bytes!("../../../resources/fonts/JosefinSans-Regular.ttf"),
+};
+
+// pub const RALEWAY_REG: Font = Font::External {
+//     name: "raleway_reg",
+//     bytes: include_bytes!("../../../resources/fonts/Raleway-Regular.ttf"),
+// };
+
+pub const RALEWAY_BOLD: Font = Font::External {
+    name: "raleway_bold",
+    bytes: include_bytes!("../../../resources/fonts/Raleway-Bold.ttf"),
 };
 
 // font sizes
