@@ -26,9 +26,9 @@ pub fn view_page(style: StyleType) -> Element<'static, Message> {
         .style(<StyleTuple as Into<iced::theme::Button>>::into(
             StyleTuple(style, ElementType::Default),
         ));
-    let cust_mode_btn = Button::new("Custom Mode")
+    let default_mode_btn = Button::new("Default Mode")
         .width(Length::Fixed(200.0))
-        .on_press(Message::ChangeStyle(StyleType::Dark))
+        .on_press(Message::ChangeStyle(StyleType::Default))
         .style(<StyleTuple as Into<iced::theme::Button>>::into(
             StyleTuple(style, ElementType::Default),
         ));
@@ -37,7 +37,7 @@ pub fn view_page(style: StyleType) -> Element<'static, Message> {
         .push(label)
         .push(light_mode_btn)
         .push(dark_mode_btn)
-        .push(cust_mode_btn);
+        .push(default_mode_btn);
 
     // Create a container to hold the column layout, set its dimensions and position, and return it as an Element
     Container::new(col)

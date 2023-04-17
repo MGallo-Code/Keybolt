@@ -43,7 +43,7 @@ impl Application for KeyboltApp {
     fn new(_flags: Self::Flags) -> (Self, Command<Message>) {
         (KeyboltApp {
             current_page: Pages::ProfilePage,
-            current_style: style_type::StyleType::Dark,
+            current_style: style_type::StyleType::Fiord,
         }, Command::none())
     }
 
@@ -63,51 +63,51 @@ impl Application for KeyboltApp {
         let style = self.current_style;
 
         let nav_btn = |label, page| {
-            if self.current_page == page {
-                Button::new(
-                    Text::new(label)
-                        .font(JOSEFIN_SANS_REG)
-                        .size(FONT_SIZE_NAV)
-                    )
-                    .width(Length::Fixed(300.0))
-                    .padding(10)
-                    .on_press(Message::ChangePage(page))
-                    .style(<StyleTuple as Into<iced::theme::Button>>::into(
-                        StyleTuple(style, ElementType::NavActive),
-                    ))
-            } else {
-                Button::new(
-                    Text::new(label)
-                        .font(JOSEFIN_SANS_REG)
-                        .size(FONT_SIZE_NAV)
-                    )
-                    .width(Length::Fixed(300.0))
-                    .padding(10)
-                    .on_press(Message::ChangePage(page))
-                    .style(<StyleTuple as Into<iced::theme::Button>>::into(
-                        StyleTuple(style, ElementType::NavInactive),
+            Button::new(
+                Text::new(label)
+                    .font(JOSEFIN_SANS_REG)
+                    .size(FONT_SIZE_NAV)
+                )
+                .width(Length::Fixed(300.0))
+                .padding(10)
+                .on_press(Message::ChangePage(page))
+                .style(<StyleTuple as Into<iced::theme::Button>>::into(
+                    if self.current_page == page {
+                        StyleTuple(style, ElementType::NavButtonSelected)
+                    } else {
+                        StyleTuple(style, ElementType::NavButton)
+                    }
                 ))
-            }
         };
 
         // Nav column
-        let keybolt_title = Text::new("Keybolt")
-            .font(JOSEFIN_SANS_REG)
-            .size(FONT_SIZE_NAV_TITLE);
+        let keybolt_title = Container::new(
+            Text::new("Keybolt")
+                .font(JOSEFIN_SANS_REG)
+                .size(FONT_SIZE_NAV_TITLE)
+            )
+            .padding(15)
+            .style(<StyleTuple as Into<iced::theme::Container>>::into(
+                StyleTuple(style, ElementType::NavHeader),
+            ));
         let profile_page_btn = nav_btn("Profile", Pages::ProfilePage);
         let passwords_page_btn = nav_btn("Passwords", Pages::PasswordsPage);
         let identities_page_btn = nav_btn("Identities", Pages::IdentitiesPage);
         let cards_page_btn = nav_btn("Cards", Pages::CardsPage);
 
         // Create nav container
-        let nav = Container::new(
-            Column::new()
-                .push(keybolt_title)
-                .push(profile_page_btn)
-                .push(passwords_page_btn)
-                .push(identities_page_btn)
-                .push(cards_page_btn)
-        ).height(iced::Length::Fill);
+        let nav =
+            Container::new(
+                Column::new()
+                    .push(keybolt_title)
+                    .push(profile_page_btn)
+                    .push(passwords_page_btn)
+                    .push(identities_page_btn)
+                    .push(cards_page_btn)
+            ).height(iced::Length::Fill)
+            .style(<StyleTuple as Into<iced::theme::Container>>::into(
+                StyleTuple(style, ElementType::NavColumn),
+            ));
 
         let window_view;
         // Set appropriate window view based on the current_view value

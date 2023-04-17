@@ -3,8 +3,6 @@ use iced::widget::button::Appearance;
 use iced::{Background, Vector};
 
 use crate::gui::styles::types::palette::get_colors;
-use crate::gui::styles::style_constants::{BORDER_WIDTH};
-use crate::gui::styles::types::palette::mix_colors;
 use crate::gui::styles::types::style_tuple::StyleTuple;
 
 use super::types::element_type::ElementType;
@@ -22,17 +20,23 @@ impl button::StyleSheet for StyleTuple {
         let colors = get_colors(self.0);
         button::Appearance {
             background: Some(Background::Color(
-                match self {
-                    StyleTuple(_, ElementType::NavActive) => colors.buttons,
-                    StyleTuple(_, ElementType::NavInactive) => colors.secondary,
-                    StyleTuple(_, ElementType::Default | _) => colors.secondary,
+                match self.1 {
+                    ElementType::NavButton => colors.nav_bg,
+                    ElementType::ItemListEntry => colors.item_list_bg,
+                    ElementType::SelectedItem => colors.selected_item_bg,
+                    ElementType::Button => colors.buttons,
+                    _ => colors.secondary_accent,
                 }
             )),
             border_radius: 0.0,
             border_width: 0.0,
             shadow_offset: Vector::new(0.0, 0.0),
-            text_color: colors.text_body,
-            border_color: colors.secondary,
+            text_color: match self.1 {
+                ElementType::NavButton => colors.nav_text,
+                ElementType::Button => colors.button_text,
+                _ => colors.primary_text,
+            },
+            border_color: colors.border,
         }
     }
 
@@ -40,11 +44,15 @@ impl button::StyleSheet for StyleTuple {
         let colors = get_colors(self.0);
         button::Appearance {
             shadow_offset: Vector::new(0.0, 2.0),
-            background: Some(Background::Color(mix_colors(colors.primary, colors.buttons))),
+            background: Some(Background::Color(colors.primary_accent)),
             border_radius: 0.0,
             border_width: 0.0,
-            border_color: colors.secondary,
-            text_color: colors.text_body,
+            border_color: colors.border,
+            text_color: match self.1 {
+                ElementType::NavButton => colors.nav_text,
+                ElementType::Button => colors.button_text,
+                _ => colors.primary_text,
+            },
         }
     }
 

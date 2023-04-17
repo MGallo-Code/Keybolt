@@ -25,7 +25,7 @@ fn main() -> Result<(), iced::Error> {
         },
         flags: (),
         default_font: Some(include_bytes!(
-            "../resources/fonts/JosefinSans-Regular.ttf"
+            "../resources/fonts/Raleway-Regular.ttf"
         )),
         default_text_size: FONT_SIZE_BODY,
         text_multithreading: true,

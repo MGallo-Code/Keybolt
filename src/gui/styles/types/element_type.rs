@@ -2,7 +2,19 @@
 #[derive(Clone, Copy)]
 pub enum ElementType {
     Default,
-    NavActive,
-    NavInactive,
-    NavTitle,
+    NavColumn,
+    NavHeader,
+    NavButton,
+    NavButtonSelected,
+    ItemListColumn,
+    ItemListEntry,
+    SelectedItem,
+    DetailsColumn,
+    PrimaryText,
+    SecondaryText,
+    PrimaryAccent,
+    SecondaryAccent,
+    Button,
+    ButtonText,
+    Border,
 }
