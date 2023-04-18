@@ -6,4 +6,6 @@ use crate::gui::core::app::Pages;
 pub enum Message {
     ChangePage(Pages),
     ChangeStyle(StyleType),
+    PasswordInputChanged(String),
+    PasswordInputSubmit,
 }
