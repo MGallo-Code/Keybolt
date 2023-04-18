@@ -1,6 +1,7 @@
 use iced::{Application, Settings};
 use iced::window::{self, PlatformSpecific, Position};
 
+mod secure;
 mod gui;
 use gui::core::app::KeyboltApp;
 use gui::styles::style_constants::FONT_SIZE_BODY;
