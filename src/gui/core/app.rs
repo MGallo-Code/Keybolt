@@ -1,6 +1,7 @@
 //! Module defining the application structure: messages, updates, subscriptions.
-use iced::widget::{Row, TextInput, Button, Text, Column, Container};
+use iced::widget::{TextInput, Button, Text, Row, Container};
 use iced::{executor, Application, Command, Element, Theme, Length};
+use zeroize::Zeroize;
 
 use crate::gui::core::{
     message::Message,
@@ -27,7 +28,7 @@ pub enum Pages {
     ProfilePage,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum LoginState {
     LoggedOut,
     LoggingIn,
@@ -66,11 +67,15 @@ impl Application for KeyboltApp {
             Message::ChangeStyle(style) => self.current_style = style,
             Message::PasswordInputChanged(password) => self.password = password,
             Message::PasswordInputSubmit => {
-                // Handle password submission
-                println!("Password submitted: {}", self.password);
+                if self.login_state != LoginState::LoggingIn {
+                    self.login_state = LoginState::LoggingIn;
 
-                // Zeroize the password after using it
-                // self.password.zeroize();
+                    // Handle password submission
+                    println!("Password submitted: {}", self.password);
+
+                    self.password.zeroize();
+                    self.login_state = LoginState::LoggedIn;
+                }
             },
         }
         Command::none()
@@ -95,16 +100,20 @@ impl Application for KeyboltApp {
                     TextInput::new(
                         "Enter password...",
                         &self.password,
-                    ).on_input(Message::PasswordInputChanged)
+                    )
+                    .padding(8)
+                    .on_input(Message::PasswordInputChanged)
                     .on_submit(Message::PasswordInputSubmit)
                     .password();
                 
-                let submit_button = Button::new(Text::new("Submit"))
-                    .on_press(Message::PasswordInputSubmit);
+                let submit_button =
+                    Button::new(Text::new("Unlock"))
+                        .padding(8)
+                        .on_press(Message::PasswordInputSubmit);
             
-                let content = Column::new()
+                let content = Row::new()
                     .width(Length::Fixed(300.0))
-                    .spacing(20)
+                    .spacing(5)
                     .push(input)
                     .push(submit_button);
             
