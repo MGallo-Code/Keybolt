@@ -1,22 +1,16 @@
-// encrypt.rs
-
-// Import necessary traits and structs from the `aes_gcm`, `rand`, and `argon2` crates.
-use aes_gcm::aead::{Aead, generic_array::GenericArray};
+use aes_gcm::aead::{generic_array::GenericArray, Aead};
 use aes_gcm::Aes256Gcm;
 use aes_gcm::KeyInit;
 use argon2::Argon2;
-use rand::{
-    Rng,
-    RngCore,
-};
+use rand::{Rng, RngCore};
+use secrets::{SecretBox};
+use serde_json::Error as SerdeError;
 use serde_json::Value;
-use zeroize::Zeroize;
 use std::fmt;
 use std::fs::File;
-use std::io::{Read, BufWriter, Write};
 use std::io;
+use std::io::{BufWriter, Read, Write};
 use std::string::FromUtf8Error;
-use serde_json::Error as SerdeError;
 
 pub fn read_data(passphrase: &str) -> Result<Value, EncryptError> {
     let mut file = File::open("encrypted_data.bin")?;
@@ -29,11 +23,9 @@ pub fn read_data(passphrase: &str) -> Result<Value, EncryptError> {
     let (ciphertext, rest) = buffer.split_at(nonce_offset);
     let (nonce, salt) = rest.split_at(12);
 
-    let mut key = derive_key(&passphrase, &salt);
+    let key = derive_key(&passphrase, &salt);
 
-    let decrypted_data = decrypt(&key, &nonce, &ciphertext);
-
-    key.zeroize();
+    let decrypted_data = decrypt(&key.borrow(), &nonce, &ciphertext);
 
     match decrypted_data {
         Ok(plaintext) => {
@@ -49,14 +41,14 @@ pub fn read_data(passphrase: &str) -> Result<Value, EncryptError> {
     }
 }
 
-pub fn save_data(passphrase: &str, data: Value) -> Result<(), EncryptError> {
+pub fn write_data(passphrase: &str, data: Value) -> Result<(), EncryptError> {
     let initial_salt = generate_salt();
-    let mut key = derive_key(&passphrase, &initial_salt);
+    let key = derive_key(&passphrase, &initial_salt);
 
     let data_str = serde_json::to_string(&data)?;
-    
-    let encrypt_result = encrypt(&key, data_str.as_bytes(), &initial_salt);
-    
+
+    let encrypt_result = encrypt(&key.borrow(), data_str.as_bytes(), &initial_salt);
+
     match encrypt_result {
         Ok((ciphertext, nonce, salt)) => {
             // Write the ciphertext, nonce, and salt to a file
@@ -74,13 +66,17 @@ pub fn save_data(passphrase: &str, data: Value) -> Result<(), EncryptError> {
         }
     }
 
-    key.zeroize();
     Ok(())
 }
 
-pub fn derive_key(passphrase: &str, salt: &[u8]) -> [u8; 32] {
-    let mut key = [0u8; 32];
-    Argon2::default().hash_password_into(passphrase.as_bytes(), salt, &mut key).unwrap();
+pub fn derive_key(passphrase: &str, salt: &[u8]) -> SecretBox<[u8; 32]> {
+    let key_data = [0u8; 32];
+    let key = SecretBox::new(|k: &mut [u8; 32]| {
+        Argon2::default()
+            .hash_password_into(passphrase.as_bytes(), salt, k)
+            .unwrap();
+        *k = key_data;
+    });
     key
 }
 
@@ -90,7 +86,11 @@ pub fn generate_salt() -> [u8; 16] {
     salt
 }
 
-pub fn encrypt(key: &[u8; 32], data: &[u8], salt: &[u8]) -> Result<(Vec<u8>, Vec<u8>, Vec<u8>), EncryptError> {
+pub fn encrypt(
+    key: &[u8; 32],
+    data: &[u8],
+    salt: &[u8],
+) -> Result<(Vec<u8>, Vec<u8>, Vec<u8>), EncryptError> {
     let cipher = Aes256Gcm::new(GenericArray::from_slice(key));
     let nonce = generate_nonce();
     let ciphertext = cipher.encrypt(GenericArray::from_slice(&nonce), data)?;
@@ -111,7 +111,7 @@ fn generate_nonce() -> [u8; 12] {
     nonce
 }
 
-// Custom error type that wraps the `aes_gcm::Error`, `io::Error`, `serde_json::Error`, and `FromUtf8Error`.
+// Custom error type that wraps the aes_gcm::Error, io::Error, serde_json::Error, and FromUtf8Error.
 #[derive(Debug)]
 pub enum EncryptError {
     Aes(aes_gcm::Error),
@@ -120,35 +120,35 @@ pub enum EncryptError {
     Utf8(FromUtf8Error),
 }
 
-// Implement the `From` trait to convert `aes_gcm::Error` to the custom error type.
+// Implement the From trait to convert aes_gcm::Error to the custom error type.
 impl From<aes_gcm::Error> for EncryptError {
     fn from(err: aes_gcm::Error) -> EncryptError {
         EncryptError::Aes(err)
     }
 }
 
-// Implement the `From` trait to convert `io::Error` to the custom error type.
+// Implement the From trait to convert io::Error to the custom error type.
 impl From<io::Error> for EncryptError {
     fn from(err: io::Error) -> EncryptError {
         EncryptError::Io(err)
     }
 }
 
-// Implement the `From` trait to convert `serde_json::Error` to the custom error type.
+// Implement the From trait to convert serde_json::Error to the custom error type.
 impl From<SerdeError> for EncryptError {
     fn from(err: SerdeError) -> EncryptError {
         EncryptError::Serde(err)
     }
 }
 
-// Implement the `From` trait to convert `FromUtf8Error` to the custom error type.
+// Implement the From trait to convert FromUtf8Error to the custom error type.
 impl From<FromUtf8Error> for EncryptError {
     fn from(err: FromUtf8Error) -> EncryptError {
         EncryptError::Utf8(err)
     }
 }
 
-// Implement the `Display` trait for the custom error type.
+// Implement the Display trait for the custom error type.
 impl fmt::Display for EncryptError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
