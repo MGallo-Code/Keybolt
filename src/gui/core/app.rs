@@ -1,6 +1,7 @@
 //! Module defining the application structure: messages, updates, subscriptions.
 use iced::widget::{TextInput, Button, Text, Row, Container};
 use iced::{executor, Application, Command, Element, Theme, Length};
+use serde_json::Value;
 use zeroize::Zeroize;
 
 use crate::gui::core::{
@@ -41,6 +42,7 @@ pub struct KeyboltApp {
     pub current_page: Pages,
     pub current_style: style_type::StyleType,
     pub password: String,
+    pub entries: Value,
 }
 
 impl Application for KeyboltApp {
@@ -55,6 +57,7 @@ impl Application for KeyboltApp {
             current_page: Pages::ProfilePage,
             current_style: style_type::StyleType::Default,
             password: String::new(),
+            entries: Value::Null,
         }, Command::none())
     }
 
@@ -71,14 +74,19 @@ impl Application for KeyboltApp {
                 if self.login_state != LoginState::LoggingIn {
                     self.login_state = LoginState::LoggingIn;
 
-                    // Handle password submission
-                    println!("Password submitted: {}", self.password);
-
-                    let login_dat = read_data(&self.password);
-                    println!("Data: {:?}", login_dat);
-
-                    self.password.zeroize();
-                    self.login_state = LoginState::LoggedIn;
+                    match read_data(&self.password) {
+                        Ok(data) => {
+                            self.entries = data;
+                            println!("Data: {:?}", self.entries);
+                            self.password.zeroize();
+                            self.login_state = LoginState::LoggedIn;
+                        },
+                        Err(e) => {
+                            println!("Error reading data: {:?}", e);
+                            self.password.zeroize();
+                            self.login_state = LoginState::LoggedOut;
+                        },
+                    }
                 }
             },
         }
