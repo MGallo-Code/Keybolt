@@ -70,12 +70,10 @@ pub fn write_data(passphrase: &str, data: Value) -> Result<(), EncryptError> {
 }
 
 pub fn derive_key(passphrase: &str, salt: &[u8]) -> SecretBox<[u8; 32]> {
-    let key_data = [0u8; 32];
     let key = SecretBox::new(|k: &mut [u8; 32]| {
         Argon2::default()
             .hash_password_into(passphrase.as_bytes(), salt, k)
             .unwrap();
-        *k = key_data;
     });
     key
 }
