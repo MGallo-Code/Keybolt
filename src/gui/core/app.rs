@@ -18,6 +18,7 @@ use crate::gui::pages::{
 use crate::gui::styles::types::element_type::ElementType;
 use crate::gui::styles::types::style_tuple::StyleTuple;
 use crate::gui::styles::types::style_type;
+use crate::secure::encrypt::read_data;
 
 // An enumeration of the different views in the application
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -72,6 +73,9 @@ impl Application for KeyboltApp {
 
                     // Handle password submission
                     println!("Password submitted: {}", self.password);
+
+                    let login_dat = read_data(&self.password);
+                    println!("Data: {:?}", login_dat);
 
                     self.password.zeroize();
                     self.login_state = LoginState::LoggedIn;

@@ -14,12 +14,12 @@ use zeroize::Zeroize;
 use std::fmt;
 use std::fs::File;
 use std::io::{Read, BufWriter, Write};
+use std::io;
+use std::string::FromUtf8Error;
+use serde_json::Error as SerdeError;
 
-pub fn read_data(passphrase: String) -> Value {
-    let initial_salt = generate_salt();
-    let mut key = derive_key(&passphrase, &initial_salt);
-
-    let mut file = File::open("encrypted_data.bin").unwrap();
+pub fn read_data(passphrase: &str) -> Result<Value, EncryptError> {
+    let mut file = File::open("encrypted_data.bin")?;
     let mut buffer = Vec::new();
     file.read_to_end(&mut buffer).unwrap();
 
@@ -27,41 +27,55 @@ pub fn read_data(passphrase: String) -> Value {
     let nonce_offset = salt_offset - 12;
 
     let (ciphertext, rest) = buffer.split_at(nonce_offset);
-    let (nonce, _salt) = rest.split_at(12);
+    let (nonce, salt) = rest.split_at(12);
 
-    let decrypted_data = decrypt(&key, &nonce, &ciphertext).unwrap();
-    let decrypted_data_str = String::from_utf8(decrypted_data).unwrap();
-    let decrypted_json: Value = serde_json::from_str(&decrypted_data_str).unwrap();
+    let mut key = derive_key(&passphrase, &salt);
 
-    println!("Data decrypted successfully!");
+    let decrypted_data = decrypt(&key, &nonce, &ciphertext);
 
     key.zeroize();
-    
-    decrypted_json
+
+    match decrypted_data {
+        Ok(plaintext) => {
+            let decrypted_data_str = String::from_utf8(plaintext)?;
+            let decrypted_json: Value = serde_json::from_str(&decrypted_data_str)?;
+            println!("Data decrypted successfully!");
+            Ok(decrypted_json)
+        }
+        Err(e) => {
+            eprintln!("Error decrypting data: {}", e);
+            Err(e)
+        }
+    }
 }
 
-pub fn save_data(passphrase: String, data: Value) {
+pub fn save_data(passphrase: &str, data: Value) -> Result<(), EncryptError> {
     let initial_salt = generate_salt();
     let mut key = derive_key(&passphrase, &initial_salt);
 
-    let mut file = File::open("encrypted_data.bin").unwrap();
-    let mut buffer = Vec::new();
-    file.read_to_end(&mut buffer).unwrap();
-
-    let data_str = serde_json::to_string(&data).unwrap();
-    let (ciphertext, nonce, salt) = encrypt(&key, data_str.as_bytes(), &initial_salt).unwrap();
+    let data_str = serde_json::to_string(&data)?;
     
-    // Write the ciphertext, nonce, and salt to a file
-    let file = File::create("encrypted_data.bin").unwrap();
-    let mut buf_writer = BufWriter::new(file);
-    buf_writer.write_all(&ciphertext).unwrap();
-    buf_writer.write_all(&nonce).unwrap();
-    buf_writer.write_all(&salt).unwrap();
-    buf_writer.flush().unwrap();
+    let encrypt_result = encrypt(&key, data_str.as_bytes(), &initial_salt);
+    
+    match encrypt_result {
+        Ok((ciphertext, nonce, salt)) => {
+            // Write the ciphertext, nonce, and salt to a file
+            let file = File::create("encrypted_data.bin")?;
+            let mut buf_writer = BufWriter::new(file);
+            buf_writer.write_all(&ciphertext).unwrap();
+            buf_writer.write_all(&nonce).unwrap();
+            buf_writer.write_all(&salt).unwrap();
+            buf_writer.flush().unwrap();
 
-    println!("Data decrypted successfully!");
+            println!("Data encrypted successfully!");
+        }
+        Err(e) => {
+            eprintln!("Error encrypting data: {}", e);
+        }
+    }
 
     key.zeroize();
+    Ok(())
 }
 
 pub fn derive_key(passphrase: &str, salt: &[u8]) -> [u8; 32] {
@@ -97,23 +111,51 @@ fn generate_nonce() -> [u8; 12] {
     nonce
 }
 
-// Custom error type that wraps the `aes_gcm::Error`.
+// Custom error type that wraps the `aes_gcm::Error`, `io::Error`, `serde_json::Error`, and `FromUtf8Error`.
 #[derive(Debug)]
-pub struct EncryptError(aes_gcm::Error);
-
-// Implement the `Display` trait for the custom error type.
-impl fmt::Display for EncryptError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Encryption error: {}", self.0)
-    }
+pub enum EncryptError {
+    Aes(aes_gcm::Error),
+    Io(io::Error),
+    Serde(SerdeError),
+    Utf8(FromUtf8Error),
 }
-
-// Implement the `std::error::Error` trait for the custom error type.
-impl std::error::Error for EncryptError {}
 
 // Implement the `From` trait to convert `aes_gcm::Error` to the custom error type.
 impl From<aes_gcm::Error> for EncryptError {
     fn from(err: aes_gcm::Error) -> EncryptError {
-        EncryptError(err)
+        EncryptError::Aes(err)
+    }
+}
+
+// Implement the `From` trait to convert `io::Error` to the custom error type.
+impl From<io::Error> for EncryptError {
+    fn from(err: io::Error) -> EncryptError {
+        EncryptError::Io(err)
+    }
+}
+
+// Implement the `From` trait to convert `serde_json::Error` to the custom error type.
+impl From<SerdeError> for EncryptError {
+    fn from(err: SerdeError) -> EncryptError {
+        EncryptError::Serde(err)
+    }
+}
+
+// Implement the `From` trait to convert `FromUtf8Error` to the custom error type.
+impl From<FromUtf8Error> for EncryptError {
+    fn from(err: FromUtf8Error) -> EncryptError {
+        EncryptError::Utf8(err)
+    }
+}
+
+// Implement the `Display` trait for the custom error type.
+impl fmt::Display for EncryptError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            EncryptError::Aes(e) => write!(f, "Encryption error: {}", e),
+            EncryptError::Io(e) => write!(f, "IO error: {}", e),
+            EncryptError::Serde(e) => write!(f, "Serde JSON error: {}", e),
+            EncryptError::Utf8(e) => write!(f, "UTF-8 error: {}", e),
+        }
     }
 }
