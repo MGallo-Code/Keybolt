@@ -8,8 +8,10 @@ use crate::gui::core::{
     message::Message,
 };
 
+use crate::gui::pages::details_page::{DetailsPageChange, DetailsPageMode};
 use crate::gui::pages::{
     cards_page,
+    details_page,
     identities_page,
     nav_page,
     passwords_page,
@@ -43,6 +45,8 @@ pub struct KeyboltApp {
     pub current_style: style_type::StyleType,
     pub password: String,
     pub entries: Value,
+    pub selected_entry_id: i8,
+    pub current_details_page_mode: details_page::DetailsPageMode,
 }
 
 impl Application for KeyboltApp {
@@ -58,6 +62,8 @@ impl Application for KeyboltApp {
             current_style: style_type::StyleType::Default,
             password: String::new(),
             entries: Value::Null,
+            selected_entry_id: -1,
+            current_details_page_mode: DetailsPageMode::Closed,
         }, Command::none())
     }
 
@@ -89,18 +95,31 @@ impl Application for KeyboltApp {
                     }
                 }
             },
+            Message::ChangeDetailsPage(details_page_change) => {
+                match details_page_change {
+                    DetailsPageChange::ChangeMode(mode) => self.current_details_page_mode = mode,
+                    DetailsPageChange::ClosePage => self.current_details_page_mode = DetailsPageMode::Closed,
+                    DetailsPageChange::SavePage => {
+                        self.current_details_page_mode = DetailsPageMode::View;
+                        //TODO save
+                    }
+                }
+            },
+            Message::SelectEntry(entry_id) => {
+                self.selected_entry_id = entry_id;
+                self.current_details_page_mode = DetailsPageMode::View;
+            },
         }
         Command::none()
     }
 
     fn view(&self) -> Element<Message> {
-        let style = self.current_style;
-        
         // Add nav and window view together, display()
-        let add_nav_view = |view| {
+        let combine_views = |view| {
             Row::new()
-                .push(nav_page::view_page(style, self.current_page))
+                .push(nav_page::view_page(self.current_style, self.current_page))
                 .push(view)
+                .push(details_page::view_page(self.current_style, self.current_details_page_mode, self.selected_entry_id))
                 .into()
         };
 
@@ -135,14 +154,14 @@ impl Application for KeyboltApp {
                     .center_x()
                     .center_y()
                     .style(<StyleTuple as Into<iced::theme::Container>>::into(
-                        StyleTuple(style, ElementType::NavColumn),
+                        StyleTuple(self.current_style, ElementType::NavColumn),
                     )).into()
             },
             // User is logged in
-            (_, Pages::ProfilePage) => add_nav_view(profile_page::view_page(style)),
-            (_, Pages::PasswordsPage) => add_nav_view(passwords_page::view_page(style)),
-            (_, Pages::IdentitiesPage) => add_nav_view(identities_page::view_page(style)),
-            (_, Pages::CardsPage) => add_nav_view(cards_page::view_page(style)),
+            (_, Pages::ProfilePage) => combine_views(profile_page::view_page(self.current_style)),
+            (_, Pages::PasswordsPage) => combine_views(passwords_page::view_page(self.current_style, self.selected_entry_id)),
+            (_, Pages::IdentitiesPage) => combine_views(identities_page::view_page(self.current_style)),
+            (_, Pages::CardsPage) => combine_views(cards_page::view_page(self.current_style)),
         }
     }
 } 

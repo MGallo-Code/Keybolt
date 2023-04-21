@@ -1,3 +1,4 @@
+use crate::gui::pages::details_page::DetailsPageChange;
 use crate::gui::styles::types::style_type::StyleType;
 use crate::gui::core::app::Pages;
 
@@ -6,6 +7,8 @@ use crate::gui::core::app::Pages;
 pub enum Message {
     ChangePage(Pages),
     ChangeStyle(StyleType),
+    ChangeDetailsPage(DetailsPageChange),
+    SelectEntry(i8),
     PasswordInputChanged(String),
     PasswordInputSubmit,
 }

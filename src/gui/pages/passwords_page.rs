@@ -11,27 +11,30 @@ use crate::gui::styles::types::{
 };
 
 // Define the user interface layout for the PasswordsPage
-pub fn view_page(style: StyleType) -> Element<'static, Message> {
-    let list_item = |label, selected| {
-        Button::new(label)
+pub fn view_page(style: StyleType, selected_entry_id: i8) -> Element<'static, Message> {
+    // Create a text label for the PasswordsPage
+    let label = Text::new("Passwords page");
+    let password_entry = |label, username, entry_id| {
+        Button::new(
+            Column::new()
+                .push(Text::new(label))
+                .push(Text::new(username))
+        )
             .padding(25)
             .width(Length::Fill)
             .style(<StyleTuple as Into<iced::theme::Button>>::into(
-                if selected {
+                if entry_id == selected_entry_id {
                     StyleTuple(style, ElementType::SelectedItem)
                 } else {
                     StyleTuple(style, ElementType::ItemListEntry)
                 }
             ))
-            .on_press(Message::ChangeStyle(StyleType::Default))
+            .on_press(Message::SelectEntry(selected_entry_id))
     };
-
-    // Create a text label for the PasswordsPage
-    let label = Text::new("Passwords page");
-    let item1 = list_item("Item 1", false);
-    let item2 = list_item("Item 2", true);
-    let item3 = list_item("Item 3", false);
-    let item4 = list_item("Item 4", false);
+    let item1 = password_entry("Item 1", "1", 0);
+    let item2 = password_entry("Item 2", "2", 1);
+    let item3 = password_entry("Item 3", "3", 2);
+    let item4 = password_entry("Item 4", "4", 3);
 
     // Create a column layout, add the label and button to it
     let col = Column::new()

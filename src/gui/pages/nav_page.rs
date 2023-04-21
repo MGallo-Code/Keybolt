@@ -25,7 +25,7 @@ pub fn view_page(style: StyleType, current_page: Pages) -> Element<'static, Mess
                 .font(RALEWAY_BOLD)
                 .size(FONT_SIZE_NAV)
             )
-            .width(Length::Fixed(300.0))
+            .width(Length::Fixed(200.0))
             .padding(10)
             .on_press(Message::ChangePage(page))
             .style(<StyleTuple as Into<iced::theme::Button>>::into(
