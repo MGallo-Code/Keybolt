@@ -1,4 +1,4 @@
-use iced::{widget::{Container, Column, Text, Space, Button}, Element, Length};
+use iced::{widget::{Container, Column, Text, Space, Button, Row}, Element, Length};
 
 use crate::gui::{styles::types::{element_type::ElementType, style_tuple::StyleTuple, style_type::StyleType}, core::{message::Message, app::Pages}};
 
@@ -17,7 +17,7 @@ pub enum DetailsPageChange {
 }
 
 // Define the user interface layout for the ProfilePage
-pub fn view_page(style: StyleType, current_details_page_mode: DetailsPageMode, selected_event_id: i8) -> Element<'static, Message> {
+pub fn view_page(style: StyleType, current_details_page_mode: DetailsPageMode, selected_event_id: i32) -> Element<'static, Message> {
     match current_details_page_mode {
         DetailsPageMode::Closed => {
             Space::new(Length::Fixed(0.0), Length::Fixed(0.0)).into()
@@ -42,13 +42,18 @@ pub fn view_page(style: StyleType, current_details_page_mode: DetailsPageMode, s
                 edit_toggle_btn = edit_toggle_btn.on_press(Message::ChangeDetailsPage(DetailsPageChange::ChangeMode(DetailsPageMode::Edit)));
             };
 
+            let header_row = Row::new()
+                .push(close_btn)
+                .push(keybolt_title)
+                .push(edit_toggle_btn);
+
             // Create nav container
             Container::new(
                 Column::new()
-                    .push(keybolt_title)
-                    .push(close_btn)
-                    .push(edit_toggle_btn)
-            ).height(iced::Length::Fill)
+                    .push(header_row)
+            )
+            .width(iced::Length::Fixed(300.0))
+            .height(iced::Length::Fill)
             .style(<StyleTuple as Into<iced::theme::Container>>::into(
                 StyleTuple(style, ElementType::NavColumn),
             )).into()

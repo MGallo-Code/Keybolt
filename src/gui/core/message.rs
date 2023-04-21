@@ -8,7 +8,7 @@ pub enum Message {
     ChangePage(Pages),
     ChangeStyle(StyleType),
     ChangeDetailsPage(DetailsPageChange),
-    SelectEntry(i8),
+    SelectEntry(i32),
     PasswordInputChanged(String),
     PasswordInputSubmit,
 }

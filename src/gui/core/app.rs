@@ -45,7 +45,7 @@ pub struct KeyboltApp {
     pub current_style: style_type::StyleType,
     pub password: String,
     pub entries: Value,
-    pub selected_entry_id: i8,
+    pub selected_entry_id: i32,
     pub current_details_page_mode: details_page::DetailsPageMode,
 }
 
@@ -159,9 +159,9 @@ impl Application for KeyboltApp {
             },
             // User is logged in
             (_, Pages::ProfilePage) => combine_views(profile_page::view_page(self.current_style)),
-            (_, Pages::PasswordsPage) => combine_views(passwords_page::view_page(self.current_style, self.selected_entry_id)),
-            (_, Pages::IdentitiesPage) => combine_views(identities_page::view_page(self.current_style)),
-            (_, Pages::CardsPage) => combine_views(cards_page::view_page(self.current_style)),
+            (_, Pages::PasswordsPage) => combine_views(passwords_page::view_page(self.current_style, &self.entries["passwords"], self.selected_entry_id)),
+            (_, Pages::IdentitiesPage) => combine_views(identities_page::view_page(self.current_style, &self.entries["identities"], self.selected_entry_id)),
+            (_, Pages::CardsPage) => combine_views(cards_page::view_page(self.current_style, &self.entries["cards"], self.selected_entry_id)),
         }
     }
 } 
