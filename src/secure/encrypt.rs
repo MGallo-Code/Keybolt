@@ -2,15 +2,87 @@ use aes_gcm::aead::{generic_array::GenericArray, Aead};
 use aes_gcm::Aes256Gcm;
 use aes_gcm::KeyInit;
 use argon2::Argon2;
+use base64::{Engine};
+use base64::engine::general_purpose;
 use rand::{Rng, RngCore};
-use secrets::{SecretBox};
-use serde_json::Error as SerdeError;
+use secrets::SecretBox;
+use secrets::traits::AsContiguousBytes;
+use serde_json::{Error as SerdeError, json};
 use serde_json::Value;
+use sodiumoxide::utils;
 use std::fmt;
 use std::fs::File;
 use std::io;
 use std::io::{BufWriter, Read, Write};
 use std::string::FromUtf8Error;
+
+pub fn encrypt_sensitive_fields(passphrase: &str, data: &mut Value) -> Result<(), EncryptError> {
+
+    if let Some(passwords) = data["passwords"].as_array_mut() {
+        for password in passwords {
+            password["password"] = encrypt_field(passphrase, &password["password"].to_string());
+            println!("{:?}", password["password"]);
+        }
+    }
+    Ok(())
+}
+
+pub fn decrypt_sensitive_fields(passphrase: &str, data: &mut Value) -> Result<(), EncryptError> {
+    if let Some(passwords) = data["passwords"].as_array_mut() {
+        for password in passwords {
+            println!("{:?}", decrypt_field(passphrase, &password["password"].to_string()));
+            password["password"] = decrypt_field(passphrase, &password["password"].to_string());
+            println!("{:?}", password["password"]);
+        }
+    }
+    Ok(())
+}
+
+fn encrypt_field(passphrase: &str, password: &String) -> Value {
+    let password = &password[1..password.len() - 1];
+
+    let salt = generate_salt();
+    let key = derive_key(passphrase, &salt);
+    let mut encrypted_password = encrypt(
+        &key.borrow(),
+        password.as_bytes(),
+        &salt,
+    ).unwrap();
+    let password_data = general_purpose::STANDARD.encode(&encrypted_password.0);
+    let password_nonce = general_purpose::STANDARD.encode(&encrypted_password.1);
+    let password_salt = general_purpose::STANDARD.encode(&encrypted_password.2);
+
+    let nonce_len = password_nonce.len();
+    let salt_len = password_salt.len();
+
+    let password_str = format!(
+        "{}{}{}{}{}",
+        nonce_len, salt_len, password_data, password_nonce, password_salt
+    );
+    
+    utils::memzero(encrypted_password.0.as_mut_slice());
+    utils::memzero(encrypted_password.1.as_mut_slice());
+    utils::memzero(encrypted_password.2.as_mut_slice());
+    
+    return json!(password_str);
+}
+
+fn decrypt_field(passphrase: &str, password: &String) -> Value {
+    let password_str = &password[1..password.len() - 1];
+
+    let salt_offset = password_str.len() - &password_str[2..4].parse::<usize>().unwrap();
+    let nonce_offset = salt_offset - &password_str[0..2].parse::<usize>().unwrap();
+
+    let encrypted_data = general_purpose::STANDARD.decode(&password_str[4..nonce_offset]).unwrap();
+    let nonce = general_purpose::STANDARD.decode(&password_str[nonce_offset..salt_offset]).unwrap();
+    let salt = general_purpose::STANDARD.decode(&password_str[salt_offset..]).unwrap();
+
+    let key = derive_key(passphrase, &salt.as_bytes());
+    let decrypted_password =
+        decrypt(&key.borrow(), &nonce, &encrypted_data).unwrap();
+
+    return json!(String::from_utf8(decrypted_password).unwrap());
+}
 
 pub fn read_data(passphrase: &str) -> Result<Value, EncryptError> {
     let mut file = File::open("encrypted_data.bin")?;
@@ -72,7 +144,7 @@ pub fn write_data(passphrase: &str, data: Value) -> Result<(), EncryptError> {
 pub fn derive_key(passphrase: &str, salt: &[u8]) -> SecretBox<[u8; 32]> {
     let key = SecretBox::new(|k: &mut [u8; 32]| {
         Argon2::default()
-            .hash_password_into(passphrase.as_bytes(), salt, k)
+            .hash_password_into(passphrase.as_bytes(), &salt, k)
             .unwrap();
     });
     key
