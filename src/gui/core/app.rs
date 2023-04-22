@@ -8,7 +8,7 @@ use crate::gui::core::{
     message::Message,
 };
 
-use crate::gui::pages::details_page::{DetailsPageChange, DetailsPageMode};
+use crate::gui::pages::details_page::{PageMode, EntryType};
 use crate::gui::pages::{
     cards_page,
     details_page,
@@ -46,7 +46,18 @@ pub struct KeyboltApp {
     pub password: String,
     pub entries: Value,
     pub selected_entry_id: i32,
-    pub current_details_page_mode: details_page::DetailsPageMode,
+    pub current_entry_mode: details_page::PageMode,
+    pub current_entry_type: EntryType,
+}
+
+impl KeyboltApp {
+    fn update_entry(&mut self, entry_type: EntryType, entry_id: i32, updated_entry: Value) {
+        if let Some(entries) = self.entries.get_mut(entry_type.as_str()) {
+            if let Some(entry) = entries.get_mut(entry_id as usize) {
+                *entry = updated_entry;
+            }
+        }
+    }
 }
 
 impl Application for KeyboltApp {
@@ -58,12 +69,13 @@ impl Application for KeyboltApp {
     fn new(_flags: Self::Flags) -> (Self, Command<Message>) {
         (KeyboltApp {
             login_state: LoginState::LoggedOut,
-            current_page: Pages::ProfilePage,
+            current_page: Pages::PasswordsPage,
             current_style: style_type::StyleType::Default,
             password: String::new(),
             entries: Value::Null,
             selected_entry_id: -1,
-            current_details_page_mode: DetailsPageMode::Closed,
+            current_entry_mode: PageMode::Closed,
+            current_entry_type: EntryType::Passwords,
         }, Command::none())
     }
 
@@ -95,20 +107,17 @@ impl Application for KeyboltApp {
                     }
                 }
             },
-            Message::ChangeDetailsPage(details_page_change) => {
-                match details_page_change {
-                    DetailsPageChange::ChangeMode(mode) => self.current_details_page_mode = mode,
-                    DetailsPageChange::ClosePage => self.current_details_page_mode = DetailsPageMode::Closed,
-                    DetailsPageChange::SavePage => {
-                        self.current_details_page_mode = DetailsPageMode::View;
-                        //TODO save
-                    }
-                }
+            Message::ChangeEntryMode(mode) => {
+                self.current_entry_mode = mode;
+            },
+            Message::UpdateEntry(entry_type, entry_id, updated_entry) => {
+                self.update_entry(entry_type, entry_id, updated_entry);
             },
             Message::SelectEntry(entry_id) => {
                 self.selected_entry_id = entry_id;
-                self.current_details_page_mode = DetailsPageMode::View;
+                self.current_entry_mode = PageMode::View;
             },
+            _ => ()
         }
         Command::none()
     }
@@ -119,7 +128,7 @@ impl Application for KeyboltApp {
             Row::new()
                 .push(nav_page::view_page(self.current_style, self.current_page))
                 .push(view)
-                .push(details_page::view_page(self.current_style, self.current_details_page_mode, self.selected_entry_id))
+                .push(details_page::view_page(self.current_style, self.current_entry_mode, self.current_entry_type, self.selected_entry_id, &self.entries))
                 .into()
         };
 

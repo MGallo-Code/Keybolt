@@ -1,5 +1,5 @@
 use iced::Length;
-use iced::widget::{Column, Container, Text, Button};
+use iced::widget::{Column, Container, Text, Button, Scrollable};
 use iced::Element;
 use serde_json::Value;
 
@@ -16,7 +16,7 @@ pub fn view_page(style: StyleType, entries: &Value, selected_entry_id: i32) -> E
     // Create a text label for the CardsPage
     let label = Text::new("Cards page");
 
-    let card_entry = |entry_id: i32, title: String, name: String, card_last_four: String| {
+    let card_entry = |entry_id: i32, entry: Value, title: String, name: String, card_last_four: String| {
         Button::new(
             Column::new()
                 .push(Text::new(title))
@@ -45,7 +45,7 @@ pub fn view_page(style: StyleType, entries: &Value, selected_entry_id: i32) -> E
     if let Some(obj) = entries.as_array() {
         for value in obj {
             col = col.push(
-                card_entry(counter,
+                card_entry(counter, value.clone(),
                     get_val(value, "title"),
                     get_val(value, "name"),
                     get_val(value, "card_last_four"),
@@ -55,8 +55,10 @@ pub fn view_page(style: StyleType, entries: &Value, selected_entry_id: i32) -> E
         }
     }
 
+    let scroll_area = Scrollable::new(col);
+    
     // Create a container to hold the column layout, set its dimensions and position, and return it as an Element
-    Container::new(col)
+    Container::new(scroll_area)
         .width(Length::Fill)
         .height(Length::Fill)
         .center_x()

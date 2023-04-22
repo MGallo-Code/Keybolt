@@ -1,5 +1,5 @@
 use iced::Length;
-use iced::widget::{Column, Container, Text, Button};
+use iced::widget::{Column, Container, Text, Button, Scrollable};
 use iced::Element;
 use serde_json::Value;
 
@@ -30,7 +30,7 @@ pub fn view_page(style: StyleType, entries: &Value, selected_entry_id: i32) -> E
                     StyleTuple(style, ElementType::ItemListEntry)
                 }
             ))
-            .on_press(Message::SelectEntry(selected_entry_id))
+            .on_press(Message::SelectEntry(entry_id))
     };
 
     // Create a column layout, add the label and button to it
@@ -52,8 +52,10 @@ pub fn view_page(style: StyleType, entries: &Value, selected_entry_id: i32) -> E
         }
     }
 
+    let scroll_area = Scrollable::new(col);
+
     // Create a container to hold the column layout, set its dimensions and position, and return it as an Element
-    Container::new(col)
+    Container::new(scroll_area)
         .width(Length::Fill)
         .height(Length::Fill)
         .center_x()
