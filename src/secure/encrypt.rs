@@ -16,36 +16,34 @@ use std::io;
 use std::io::{BufWriter, Read, Write};
 use std::string::FromUtf8Error;
 
-pub fn encrypt_sensitive_fields(passphrase: &str, data: &mut Value) -> Result<(), EncryptError> {
+use crate::gui::pages::details_page::EntryType;
 
-    if let Some(passwords) = data["passwords"].as_array_mut() {
-        for password in passwords {
-            password["password"] = encrypt_field(passphrase, &password["password"].to_string());
-            println!("{:?}", password["password"]);
+pub fn encrypt_sensitive_fields(passphrase: &str, data: &mut Value, entry_type: EntryType) -> Result<(), EncryptError> {
+    match entry_type {
+        EntryType::Passwords => {
+            data["password"] = encrypt_field(passphrase, data["password"].as_str().unwrap_or(""));
         }
+        _ => ()
     }
     Ok(())
 }
 
-pub fn decrypt_sensitive_fields(passphrase: &str, data: &mut Value) -> Result<(), EncryptError> {
-    if let Some(passwords) = data["passwords"].as_array_mut() {
-        for password in passwords {
-            println!("{:?}", decrypt_field(passphrase, &password["password"].to_string()));
-            password["password"] = decrypt_field(passphrase, &password["password"].to_string());
-            println!("{:?}", password["password"]);
+pub fn decrypt_sensitive_fields(passphrase: &str, data: &mut Value, entry_type: EntryType) -> Result<(), EncryptError> {
+    match entry_type {
+        EntryType::Passwords => {
+            data["password"] = decrypt_field(passphrase, data["password"].as_str().unwrap_or(""));
         }
+        _ => ()
     }
     Ok(())
 }
 
-fn encrypt_field(passphrase: &str, password: &String) -> Value {
-    let password = &password[1..password.len() - 1];
-
+fn encrypt_field(passphrase: &str, password_str: &str) -> Value {
     let salt = generate_salt();
     let key = derive_key(passphrase, &salt);
     let mut encrypted_password = encrypt(
         &key.borrow(),
-        password.as_bytes(),
+        password_str.as_bytes(),
         &salt,
     ).unwrap();
     let password_data = general_purpose::STANDARD.encode(&encrypted_password.0);
@@ -67,9 +65,7 @@ fn encrypt_field(passphrase: &str, password: &String) -> Value {
     return json!(password_str);
 }
 
-fn decrypt_field(passphrase: &str, password: &String) -> Value {
-    let password_str = &password[1..password.len() - 1];
-
+fn decrypt_field(passphrase: &str, password_str: &str) -> Value {
     let salt_offset = password_str.len() - &password_str[2..4].parse::<usize>().unwrap();
     let nonce_offset = salt_offset - &password_str[0..2].parse::<usize>().unwrap();
 

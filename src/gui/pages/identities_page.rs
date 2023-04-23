@@ -32,7 +32,7 @@ pub fn view_page(style: StyleType, entries: &Value, selected_entry_id: i32) -> E
                     StyleTuple(style, ElementType::ItemListEntry)
                 }
             ))
-            .on_press(Message::SelectEntry(selected_entry_id))
+            .on_press(Message::SelectEntry(entry_id))
     };
 
     // Create a column layout, add the label and button to it

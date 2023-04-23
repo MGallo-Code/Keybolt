@@ -16,7 +16,7 @@ pub fn view_page(style: StyleType, entries: &Value, selected_entry_id: i32) -> E
     // Create a text label for the CardsPage
     let label = Text::new("Cards page");
 
-    let card_entry = |entry_id: i32, entry: Value, title: String, name: String, card_last_four: String| {
+    let card_entry = |entry_id: i32, title: String, name: String, card_last_four: String| {
         Button::new(
             Column::new()
                 .push(Text::new(title))
@@ -32,7 +32,7 @@ pub fn view_page(style: StyleType, entries: &Value, selected_entry_id: i32) -> E
                     StyleTuple(style, ElementType::ItemListEntry)
                 }
             ))
-            .on_press(Message::SelectEntry(selected_entry_id))
+            .on_press(Message::SelectEntry(entry_id))
     };
 
     // Create a column layout, add the label and button to it
@@ -45,7 +45,7 @@ pub fn view_page(style: StyleType, entries: &Value, selected_entry_id: i32) -> E
     if let Some(obj) = entries.as_array() {
         for value in obj {
             col = col.push(
-                card_entry(counter, value.clone(),
+                card_entry(counter,
                     get_val(value, "title"),
                     get_val(value, "name"),
                     get_val(value, "card_last_four"),

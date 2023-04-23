@@ -28,7 +28,7 @@ impl EntryType {
 }
 
 // Define the user interface layout for the ProfilePage
-pub fn view_page(style: StyleType, current_page_mode: PageMode, entry_type: EntryType, entries: &Value, entry_data_edits: &Value) -> Element<'static, Message> {
+pub fn view_page(style: StyleType, current_page_mode: PageMode, entry_type: EntryType, entry_data_edits: &Value) -> Element<'static, Message> {
     match current_page_mode {
         PageMode::Closed => {
             Space::new(Length::Fixed(0.0), Length::Fixed(0.0)).into()
@@ -52,7 +52,6 @@ pub fn view_page(style: StyleType, current_page_mode: PageMode, entry_type: Entr
             if current_page_mode == PageMode::Edit {
                 edit_toggle_btn = edit_toggle_btn
                     .on_press(Message::SaveEntryEdits)
-                    .on_press(Message::ChangeEntryMode(PageMode::View));
             } else {
                 edit_toggle_btn = edit_toggle_btn.on_press(Message::ChangeEntryMode(PageMode::Edit));
             }
