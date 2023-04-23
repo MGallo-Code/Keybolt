@@ -68,7 +68,154 @@ pub fn view_page(style: StyleType, current_page_mode: PageMode, entry_type: Entr
             let details_body =
                 match current_page_mode {
                     PageMode::View => {
-                        Scrollable::new(Text::new("Hi"))
+                        match entry_type {
+                            EntryType::Passwords => {
+                                let title_label = Text::new("Title: ").size(16);
+                                let title_value = Text::new(entry_data_edits["title"].to_string()).size(16);
+
+                                let url_label = Text::new("URL: ").size(16);
+                                let url_value = Text::new(entry_data_edits["url"].to_string()).size(16);
+
+                                let username_label = Text::new("Username: ").size(16);
+                                let username_value = Text::new(entry_data_edits["username"].to_string()).size(16);
+
+                                let password_label = Text::new("Password: ").size(16);
+                                let password_value = Text::new(entry_data_edits["password"].to_string()).size(16);
+
+                                let otpauth_label = Text::new("OTP Auth: ").size(16);
+                                let otpauth_value = Text::new(entry_data_edits["otpauth"].to_string()).size(16);
+
+                                // let favorite_label = Text::new("Favorite: ").size(16);
+                                // let favorite_value = Text::new(if entry_data_edits.favorite { "Yes" } else { "No" }).size(16);
+
+                                let tags_label = Text::new("Tags: ").size(16);
+                                let tags_value = Text::new(entry_data_edits["tags"].to_string());
+
+                                let notes_label = Text::new("Notes: ").size(16);
+                                let notes_value = Text::new(entry_data_edits["notes"].to_string()).size(16);
+
+                                let content = Column::new()
+                                    .spacing(10)
+                                    .push(title_label)
+                                    .push(title_value)
+                                    .push(url_label)
+                                    .push(url_value)
+                                    .push(username_label)
+                                    .push(username_value)
+                                    .push(password_label)
+                                    .push(password_value)
+                                    .push(otpauth_label)
+                                    .push(otpauth_value)
+                                    // .push(favorite_label)
+                                    // .push(favorite_value)
+                                    .push(tags_label)
+                                    .push(tags_value)
+                                    .push(notes_label)
+                                    .push(notes_value)
+                                    .width(iced::Length::Fill);
+
+                                Scrollable::new(content)
+                            },
+                            EntryType::Identities => {
+                                let title_label = Text::new("Title: ").size(16);
+                                let title_value = Text::new(entry_data_edits["title"].to_string()).size(16);
+
+                                let first_name_label = Text::new("First Name: ").size(16);
+                                let first_name_value = Text::new(entry_data_edits["first_name"].to_string()).size(16);
+
+                                let middle_initial_label = Text::new("Middle Initial: ").size(16);
+                                let middle_initial_value = Text::new(entry_data_edits["middle_initial"].to_string()).size(16);
+
+                                let last_name_label = Text::new("Last Name: ").size(16);
+                                let last_name_value = Text::new(entry_data_edits["last_name"].to_string()).size(16);
+
+                                let address_label = Text::new("Address: ").size(16);
+                                let address_value = Text::new(entry_data_edits["address"].to_string()).size(16);
+
+                                let city_label = Text::new("City: ").size(16);
+                                let city_value = Text::new(entry_data_edits["city"].to_string()).size(16);
+
+                                let country_label = Text::new("Country: ").size(16);
+                                let country_value = Text::new(entry_data_edits["country"].to_string()).size(16);
+
+                                let state_label = Text::new("State: ").size(16);
+                                let state_value = Text::new(entry_data_edits["state"].to_string()).size(16);
+
+                                let zipcode_label = Text::new("Zipcode: ").size(16);
+                                let zipcode_value = Text::new(entry_data_edits["zipcode"].to_string()).size(16);
+
+                                let phone_label = Text::new("Phone: ").size(16);
+                                let phone_value = Text::new(entry_data_edits["phone"].to_string()).size(16);
+
+                                let email_label = Text::new("Email: ").size(16);
+                                let email_value = Text::new(entry_data_edits["email"].to_string()).size(16);
+
+                                let apt_number_label = Text::new("Apt Number: ").size(16);
+                                let apt_number_value = Text::new(entry_data_edits["apt_number"].to_string()).size(16);
+
+                                let content = Column::new()
+                                    .spacing(10)
+                                    .push(title_label)
+                                    .push(title_value)
+                                    .push(first_name_label)
+                                    .push(first_name_value)
+                                    .push(middle_initial_label)
+                                    .push(middle_initial_value)
+                                    .push(last_name_label)
+                                    .push(last_name_value)
+                                    .push(address_label)
+                                    .push(address_value)
+                                    .push(city_label)
+                                    .push(city_value)
+                                    .push(country_label)
+                                    .push(country_value)
+                                    .push(state_label)
+                                    .push(state_value)
+                                    .push(zipcode_label)
+                                    .push(zipcode_value)
+                                    .push(phone_label)
+                                    .push(phone_value)
+                                    .push(email_label)
+                                    .push(email_value)
+                                    .push(apt_number_label)
+                                    .push(apt_number_value)
+                                    .width(iced::Length::Fill);
+
+                                Scrollable::new(content)
+                            },
+                            EntryType::Cards => {
+                                let title_label = Text::new("Title: ").size(16);
+                                let title_value = Text::new(entry_data_edits["title"].to_string()).size(16);
+
+                                let card_number_label = Text::new("Card Number: ").size(16);
+                                let card_number_value = Text::new(entry_data_edits["card_number"].to_string()).size(16);
+
+                                let cardholder_name_label = Text::new("Cardholder Name: ").size(16);
+                                let cardholder_name_value = Text::new(entry_data_edits["cardholder_name"].to_string()).size(16);
+
+                                let expiration_date_label = Text::new("Expiration Date: ").size(16);
+                                let expiration_date_value = Text::new(entry_data_edits["expiration_date"].to_string()).size(16);
+
+                                let security_code_label = Text::new("Security Code: ").size(16);
+                                let security_code_value = Text::new(entry_data_edits["security_code"].to_string()).size(16);
+
+                                let content = Column::new()
+                                    .spacing(10)
+                                    .push(title_label)
+                                    .push(title_value)
+                                    .push(card_number_label)
+                                    .push(card_number_value)
+                                    .push(cardholder_name_label)
+                                    .push(cardholder_name_value)
+                                    .push(expiration_date_label)
+                                    .push(expiration_date_value)
+                                    .push(security_code_label)
+                                    .push(security_code_value)
+                                    .width(iced::Length::Fill);
+
+                                Scrollable::new(content)
+                            }
+                        }
                     },
                     PageMode::Edit | _ => {
                         match entry_type {
@@ -231,12 +378,12 @@ pub fn view_page(style: StyleType, current_page_mode: PageMode, entry_type: Entr
                 Column::new()
                     .push(header_row)
                     .push(details_body)
-            )
-            .width(iced::Length::Fixed(300.0))
-            .height(iced::Length::Fill)
-            .style(<StyleTuple as Into<iced::theme::Container>>::into(
-                StyleTuple(style, ElementType::NavColumn),
-            )).into()
+                )
+                .width(iced::Length::Fixed(300.0))
+                .height(iced::Length::Fill)
+                .style(<StyleTuple as Into<iced::theme::Container>>::into(
+                    StyleTuple(style, ElementType::NavColumn),
+                )).into()
         },
     }
 }
