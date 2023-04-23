@@ -2,7 +2,7 @@ use iced::Color;
 use crate::gui::styles::style_constants::{
     DEFAULT_STYLE, DARK_STYLE, VIBRANT_STYLE, FJORD_STYLE,
 };
-use crate::gui::styles::types::style_type::StyleType;
+
 
 pub struct Palette {
     /// Background color for the navigation column
@@ -33,17 +33,17 @@ pub struct Palette {
     pub border: Color,
 }
 
-pub fn get_colors(style: StyleType) -> Palette {
-    match style {
-        StyleType::Default => DEFAULT_STYLE,
-        StyleType::Dark => DARK_STYLE,
-        StyleType::Vibrant => VIBRANT_STYLE,
-        StyleType::Fjord => FJORD_STYLE,
-    }
-}
+// pub fn get_colors(style: StyleType) -> Palette {
+//     match style {
+//         StyleType::Default => DEFAULT_STYLE,
+//         StyleType::Dark => DARK_STYLE,
+//         StyleType::Vibrant => VIBRANT_STYLE,
+//         StyleType::Fjord => FJORD_STYLE,
+//     }
+// }
 
-impl Default for Palette {
-    fn default() -> Self {
-        get_colors(StyleType::Dark)
-    }
-}
+// impl Default for Palette {
+//     fn default() -> Self {
+//         get_colors(StyleType::Dark)
+//     }
+// }

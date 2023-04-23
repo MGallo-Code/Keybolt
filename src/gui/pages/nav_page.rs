@@ -13,7 +13,6 @@ use crate::gui::styles::style_constants::{
 };
 use crate::gui::styles::types::{
     style_type::StyleType,
-    style_tuple::StyleTuple,
     element_type::ElementType,
 };
 
@@ -28,13 +27,6 @@ pub fn view_page(style: StyleType, current_page: Pages) -> Element<'static, Mess
             .width(Length::Fixed(200.0))
             .padding(10)
             .on_press(Message::ChangePage(page))
-            .style(<StyleTuple as Into<iced::theme::Button>>::into(
-                if current_page == page {
-                    StyleTuple(style, ElementType::NavButtonSelected)
-                } else {
-                    StyleTuple(style, ElementType::NavButton)
-                }
-            ))
     };
 
     // Nav column
@@ -43,10 +35,7 @@ pub fn view_page(style: StyleType, current_page: Pages) -> Element<'static, Mess
             .font(JOSEFIN_SANS_REG)
             .size(FONT_SIZE_NAV_TITLE)
         )
-        .padding(15)
-        .style(<StyleTuple as Into<iced::theme::Container>>::into(
-            StyleTuple(style, ElementType::NavHeader),
-        ));
+        .padding(15);
     let profile_page_btn = nav_btn("Profile", Pages::ProfilePage);
     let passwords_page_btn = nav_btn("Passwords", Pages::PasswordsPage);
     let identities_page_btn = nav_btn("Identities", Pages::IdentitiesPage);
@@ -61,7 +50,5 @@ pub fn view_page(style: StyleType, current_page: Pages) -> Element<'static, Mess
             .push(identities_page_btn)
             .push(cards_page_btn)
     ).height(iced::Length::Fill)
-    .style(<StyleTuple as Into<iced::theme::Container>>::into(
-        StyleTuple(style, ElementType::NavColumn),
-    )).into()
+    .into()
 }

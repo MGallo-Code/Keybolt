@@ -6,7 +6,6 @@ use iced::Element;
 use crate::gui::core::message::Message;
 use crate::gui::styles::types::{
     style_type::StyleType,
-    style_tuple::StyleTuple,
     element_type::ElementType,
 };
 
@@ -16,28 +15,16 @@ pub fn view_page(style: StyleType) -> Element<'static, Message> {
     let label = Text::new("Profile Page");
     let fjord_mode_btn = Button::new("Fjord Mode")
         .width(Length::Fixed(200.0))
-        .on_press(Message::ChangeStyle(StyleType::Fjord))
-        .style(<StyleTuple as Into<iced::theme::Button>>::into(
-            StyleTuple(style, ElementType::Default),
-        ));
+        .on_press(Message::ChangeStyle(StyleType::Fjord));
     let vibrant_mode_btn = Button::new("Vibrant Mode")
         .width(Length::Fixed(200.0))
-        .on_press(Message::ChangeStyle(StyleType::Vibrant))
-        .style(<StyleTuple as Into<iced::theme::Button>>::into(
-            StyleTuple(style, ElementType::Default),
-        ));
+        .on_press(Message::ChangeStyle(StyleType::Vibrant));
     let dark_mode_btn = Button::new("Dark Mode")
         .width(Length::Fixed(200.0))
-        .on_press(Message::ChangeStyle(StyleType::Dark))
-        .style(<StyleTuple as Into<iced::theme::Button>>::into(
-            StyleTuple(style, ElementType::Default),
-        ));
+        .on_press(Message::ChangeStyle(StyleType::Dark));
     let default_mode_btn = Button::new("Default Mode")
         .width(Length::Fixed(200.0))
-        .on_press(Message::ChangeStyle(StyleType::Default))
-        .style(<StyleTuple as Into<iced::theme::Button>>::into(
-            StyleTuple(style, ElementType::Default),
-        ));
+        .on_press(Message::ChangeStyle(StyleType::Default));
 
     let col = Column::new()
         .push(label)
@@ -52,8 +39,5 @@ pub fn view_page(style: StyleType) -> Element<'static, Message> {
         .height(Length::Fill)
         .center_x()
         .center_y()
-        .style(<StyleTuple as Into<iced::theme::Container>>::into(
-            StyleTuple(style, ElementType::ItemListColumn),
-        ))
         .into()
 }

@@ -7,7 +7,6 @@ use serde_json::Value;
 use crate::gui::core::message::Message;
 use crate::gui::styles::types::{
     style_type::StyleType,
-    style_tuple::StyleTuple,
     element_type::ElementType,
 };
 
@@ -23,13 +22,6 @@ pub fn view_page(style: StyleType, entries: &Value, selected_entry_id: i32) -> E
         )
             .padding(25)
             .width(Length::Fill)
-            .style(<StyleTuple as Into<iced::theme::Button>>::into(
-                if entry_id == selected_entry_id {
-                    StyleTuple(style, ElementType::SelectedItem)
-                } else {
-                    StyleTuple(style, ElementType::ItemListEntry)
-                }
-            ))
             .on_press(Message::SelectEntry(entry_id))
     };
 
@@ -60,8 +52,5 @@ pub fn view_page(style: StyleType, entries: &Value, selected_entry_id: i32) -> E
         .height(Length::Fill)
         .center_x()
         .center_y()
-        .style(<StyleTuple as Into<iced::theme::Container>>::into(
-            StyleTuple(style, ElementType::ItemListColumn),
-        ))
         .into()
 }

@@ -19,7 +19,6 @@ use crate::gui::pages::{
 };
 
 use crate::gui::styles::types::element_type::ElementType;
-use crate::gui::styles::types::style_tuple::StyleTuple;
 use crate::gui::styles::types::style_type;
 use crate::secure::encrypt::{read_data, encrypt_sensitive_fields, decrypt_sensitive_fields, write_data};
 
@@ -204,9 +203,7 @@ impl Application for KeyboltApp {
                     .height(Length::Fill)
                     .center_x()
                     .center_y()
-                    .style(<StyleTuple as Into<iced::theme::Container>>::into(
-                        StyleTuple(self.current_style, ElementType::NavColumn),
-                    )).into()
+                    .into()
             },
             // User is logged in
             (_, Pages::ProfilePage) => combine_views(profile_page::view_page(self.current_style)),

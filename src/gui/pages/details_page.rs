@@ -1,7 +1,7 @@
 use iced::{widget::{Container, Column, Text, Space, Button, Row, Scrollable, TextInput}, Element, Length};
 use serde_json::Value;
 
-use crate::gui::{styles::types::{element_type::ElementType, style_tuple::StyleTuple, style_type::StyleType}, core::{message::Message}};
+use crate::gui::{styles::types::{element_type::ElementType, style_type::StyleType}, core::{message::Message}};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PageMode {
@@ -38,10 +38,7 @@ pub fn view_page(style: StyleType, current_page_mode: PageMode, entry_type: Entr
             let keybolt_title = Container::new(
                 Text::new("Details Window")
                 )
-                .padding(15)
-                .style(<StyleTuple as Into<iced::theme::Container>>::into(
-                    StyleTuple(style, ElementType::NavHeader),
-                ));
+                .padding(15);
             
             // HEADER
             let close_btn = Button::new("Close")
@@ -381,9 +378,7 @@ pub fn view_page(style: StyleType, current_page_mode: PageMode, entry_type: Entr
                 )
                 .width(iced::Length::Fixed(300.0))
                 .height(iced::Length::Fill)
-                .style(<StyleTuple as Into<iced::theme::Container>>::into(
-                    StyleTuple(style, ElementType::NavColumn),
-                )).into()
+                .into()
         },
     }
 }
