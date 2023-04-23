@@ -10,7 +10,7 @@ pub enum Message {
     ChangePage(Pages),
     ChangeStyle(StyleType),
     ChangeEntryMode(PageMode),
-    UpdateEntry(EntryType, i32, Value),
+    SaveEntryEdits,
     SelectEntry(i32),
     PasswordInputChanged(String),
     PasswordInputSubmit,
@@ -21,7 +21,7 @@ pub enum Message {
     UpdatePasswordUsername(String),
     UpdatePasswordPassword(String),
     UpdatePasswordOtpAuth(String),
-    UpdatePasswordFavorite(String),
+    UpdatePasswordFavorite(bool),
     UpdatePasswordTags(String),
     UpdatePasswordNotes(String),
 

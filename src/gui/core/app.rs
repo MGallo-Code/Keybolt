@@ -46,6 +46,7 @@ pub struct KeyboltApp {
     pub password: String,
     pub entries: Value,
     pub selected_entry_id: i32,
+    pub current_entry_edits: Value,
     pub current_entry_mode: details_page::PageMode,
     pub current_entry_type: EntryType,
 }
@@ -74,6 +75,7 @@ impl Application for KeyboltApp {
             password: String::new(),
             entries: Value::Null,
             selected_entry_id: -1,
+            current_entry_edits: Value::Null,
             current_entry_mode: PageMode::Closed,
             current_entry_type: EntryType::Passwords,
         }, Command::none())
@@ -95,7 +97,7 @@ impl Application for KeyboltApp {
                     match read_data(&self.password) {
                         Ok(data) => {
                             self.entries = data;
-                            println!("Data: {:?}", self.entries);
+                            // println!("Data: {:?}", self.entries);
                             self.password.zeroize();
                             self.login_state = LoginState::LoggedIn;
                         },
@@ -110,13 +112,45 @@ impl Application for KeyboltApp {
             Message::ChangeEntryMode(mode) => {
                 self.current_entry_mode = mode;
             },
-            Message::UpdateEntry(entry_type, entry_id, updated_entry) => {
-                self.update_entry(entry_type, entry_id, updated_entry);
+            Message::SaveEntryEdits => {
+                self.entries[self.current_entry_type.as_str()][self.selected_entry_id as usize] = self.current_entry_edits.clone();
             },
             Message::SelectEntry(entry_id) => {
                 self.selected_entry_id = entry_id;
+                self.current_entry_edits = self.entries[self.current_entry_type.as_str()][entry_id as usize].clone();
                 self.current_entry_mode = PageMode::View;
             },
+            // Messages for updating password entries
+            Message::UpdatePasswordTitle(input) => self.current_entry_edits["title"] = Value::String(input),
+            Message::UpdatePasswordUrl(input) => self.current_entry_edits["passwords"][self.selected_entry_id as usize]["url"] = Value::String(input),
+            Message::UpdatePasswordUsername(input) => self.current_entry_edits["passwords"][self.selected_entry_id as usize]["username"] = Value::String(input),
+            Message::UpdatePasswordPassword(input) => self.current_entry_edits["passwords"][self.selected_entry_id as usize]["password"] = Value::String(input),
+            Message::UpdatePasswordOtpAuth(input) => self.current_entry_edits["passwords"][self.selected_entry_id as usize]["otpauth"] = Value::String(input),
+            Message::UpdatePasswordFavorite(input) => self.current_entry_edits["passwords"][self.selected_entry_id as usize]["favorite"] = Value::Bool(input),
+            Message::UpdatePasswordTags(input) => self.current_entry_edits["passwords"][self.selected_entry_id as usize]["tags"] = Value::String(input),
+            Message::UpdatePasswordNotes(input) => self.current_entry_edits["passwords"][self.selected_entry_id as usize]["notes"] = Value::String(input),
+
+            // Messages for updating identity entries
+            Message::UpdateIdentityTitle(input) => self.current_entry_edits["identities"][self.selected_entry_id as usize]["title"] = Value::String(input),
+            Message::UpdateIdentityFirstName(input) => self.current_entry_edits["identities"][self.selected_entry_id as usize]["first_name"] = Value::String(input),
+            Message::UpdateIdentityMiddleInitial(input) => self.current_entry_edits["identities"][self.selected_entry_id as usize]["middle_initial"] = Value::String(input),
+            Message::UpdateIdentityLastName(input) => self.current_entry_edits["identities"][self.selected_entry_id as usize]["last_name"] = Value::String(input),
+            Message::UpdateIdentityAddress(input) => self.current_entry_edits["identities"][self.selected_entry_id as usize]["address"] = Value::String(input),
+            Message::UpdateIdentityCity(input) => self.current_entry_edits["identities"][self.selected_entry_id as usize]["city"] = Value::String(input),
+            Message::UpdateIdentityCountry(input) => self.current_entry_edits["identities"][self.selected_entry_id as usize]["country"] = Value::String(input),
+            Message::UpdateIdentityState(input) => self.current_entry_edits["identities"][self.selected_entry_id as usize]["state"] = Value::String(input),
+            Message::UpdateIdentityZipcode(input) => self.current_entry_edits["identities"][self.selected_entry_id as usize]["zipcode"] = Value::String(input),
+            Message::UpdateIdentityPhone(input) => self.current_entry_edits["identities"][self.selected_entry_id as usize]["phone"] = Value::String(input),
+            Message::UpdateIdentityEmail(input) => self.current_entry_edits["identities"][self.selected_entry_id as usize]["email"] = Value::String(input),
+            Message::UpdateIdentityAptNumber(input) => self.current_entry_edits["identities"][self.selected_entry_id as usize]["apt_number"] = Value::String(input),
+
+            // Messages for updating card entries
+            Message::UpdateCardTitle(input) => self.current_entry_edits["cards"][self.selected_entry_id as usize]["title"] = Value::String(input),
+            Message::UpdateCardName(input) => self.current_entry_edits["cards"][self.selected_entry_id as usize]["name"] = Value::String(input),
+            Message::UpdateCardNumber(input) => self.current_entry_edits["cards"][self.selected_entry_id as usize]["card_number"] = Value::String(input),
+            Message::UpdateCardLastFour(input) => self.current_entry_edits["cards"][self.selected_entry_id as usize]["card_last_four"] = Value::String(input),
+            Message::UpdateCardExpirationDate(input) => self.current_entry_edits["cards"][self.selected_entry_id as usize]["expiration_date"] = Value::String(input),
+            Message::UpdateCardSecurityCode(input) => self.current_entry_edits["cards"][self.selected_entry_id as usize]["security_code"] = Value::String(input),
             _ => ()
         }
         Command::none()
@@ -128,7 +162,7 @@ impl Application for KeyboltApp {
             Row::new()
                 .push(nav_page::view_page(self.current_style, self.current_page))
                 .push(view)
-                .push(details_page::view_page(self.current_style, self.current_entry_mode, self.current_entry_type, self.selected_entry_id, &self.entries))
+                .push(details_page::view_page(self.current_style, self.current_entry_mode, self.current_entry_type, &self.entries, &self.current_entry_edits))
                 .into()
         };
 
