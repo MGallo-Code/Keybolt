@@ -3,10 +3,11 @@ use iced::widget::{Column, Container, Text, Button};
 
 // Import Message enum from the main application module
 use crate::gui::core::message::Message;
+use crate::gui::styles::elements::button::ButtonStyle;
 use crate::gui::styles::keybolt_theme::KeyboltTheme;
 
 // Define the user interface layout for the ProfilePage
-pub fn view_page(theme: KeyboltTheme) -> Element<'static, Message, Renderer<KeyboltTheme>> {
+pub fn view_page() -> Element<'static, Message, Renderer<KeyboltTheme>> {
     // Create a text label for the ProfilePage
     let label = Text::new("Profile Page");
     let fjord_mode_btn = Button::new("Fjord Mode")
@@ -20,7 +21,8 @@ pub fn view_page(theme: KeyboltTheme) -> Element<'static, Message, Renderer<Keyb
         .on_press(Message::ChangeStyle(KeyboltTheme::Dark));
     let default_mode_btn = Button::new("Light Mode")
         .width(Length::Fixed(200.0))
-        .on_press(Message::ChangeStyle(KeyboltTheme::Light));
+        .on_press(Message::ChangeStyle(KeyboltTheme::Light))
+        .style(ButtonStyle::New);
 
     let col = Column::new()
         .push(label)

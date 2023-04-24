@@ -7,7 +7,7 @@ use crate::gui::core::message::Message;
 use crate::gui::styles::keybolt_theme::KeyboltTheme;
 
 // Define the user interface layout for the CardsPage
-pub fn view_page(theme: KeyboltTheme, entries: &Value, selected_entry_id: i32) -> Element<'static, Message, Renderer<KeyboltTheme>> {
+pub fn view_page(entries: &Value, selected_entry_id: i32) -> Element<'static, Message, Renderer<KeyboltTheme>> {
     // Create a text label for the CardsPage
     let label = Text::new("Cards page");
 

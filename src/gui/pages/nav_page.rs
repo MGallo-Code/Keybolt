@@ -5,7 +5,7 @@ use crate::gui::core::app::Pages;
 // Import Message enum from the main application module
 use crate::gui::core::message::Message;
 use crate::gui::styles::keybolt_theme::KeyboltTheme;
-use crate::gui::styles::style_constants::{
+use crate::gui::styles::font_constants::{
     FONT_SIZE_NAV,
     FONT_SIZE_NAV_TITLE,
     JOSEFIN_SANS_REG,
@@ -13,7 +13,7 @@ use crate::gui::styles::style_constants::{
 };
 
 // Define the user interface layout for the ProfilePage
-pub fn view_page(theme: KeyboltTheme, current_page: Pages) -> Element<'static, Message, Renderer<KeyboltTheme>> {
+pub fn view_page(current_page: Pages) -> Element<'static, Message, Renderer<KeyboltTheme>> {
     let nav_btn = |label, page| {
         Button::new(
             Text::new(label)

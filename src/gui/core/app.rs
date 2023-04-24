@@ -157,7 +157,6 @@ impl Application for KeyboltApp {
             Message::UpdateCardLastFour(input) => self.current_entry_edits["card_last_four"] = Value::String(input),
             Message::UpdateCardExpirationDate(input) => self.current_entry_edits["expiration_date"] = Value::String(input),
             Message::UpdateCardSecurityCode(input) => self.current_entry_edits["security_code"] = Value::String(input),
-            _ => ()
         }
         Command::none()
     }
@@ -166,9 +165,9 @@ impl Application for KeyboltApp {
         // Add nav and window view together, display()
         let combine_views = |view| -> Element<'static, Message, Renderer<KeyboltTheme>> {
             Row::new()
-                .push(nav_page::view_page(self.current_theme, self.current_page))
+                .push(nav_page::view_page(self.current_page))
                 .push(view)
-                .push(details_page::view_page(self.current_theme, self.current_entry_mode, self.current_entry_type, &self.current_entry_edits))
+                .push(details_page::view_page(self.current_entry_mode, self.current_entry_type, &self.current_entry_edits))
                 .into()
         };
         // Set appropriate window view based on the current_view value
@@ -204,10 +203,14 @@ impl Application for KeyboltApp {
                     .into()
             },
             // User is logged in
-            (_, Pages::ProfilePage) => combine_views(profile_page::view_page(self.current_theme)),
-            (_, Pages::PasswordsPage) => combine_views(passwords_page::view_page(self.current_theme, &self.entries["passwords"], self.selected_entry_id)),
-            (_, Pages::IdentitiesPage) => combine_views(identities_page::view_page(self.current_theme, &self.entries["identities"], self.selected_entry_id)),
-            (_, Pages::CardsPage) => combine_views(cards_page::view_page(self.current_theme, &self.entries["cards"], self.selected_entry_id)),
+            (_, Pages::ProfilePage) => combine_views(profile_page::view_page()),
+            (_, Pages::PasswordsPage) => combine_views(passwords_page::view_page(&self.entries["passwords"], self.selected_entry_id)),
+            (_, Pages::IdentitiesPage) => combine_views(identities_page::view_page(&self.entries["identities"], self.selected_entry_id)),
+            (_, Pages::CardsPage) => combine_views(cards_page::view_page(&self.entries["cards"], self.selected_entry_id)),
         }
+    }
+
+    fn theme(&self) -> Self::Theme {
+        self.current_theme
     }
 } 

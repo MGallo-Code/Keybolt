@@ -30,7 +30,7 @@ impl EntryType {
 }
 
 // Define the user interface layout for the ProfilePage
-pub fn view_page(theme: KeyboltTheme, current_page_mode: PageMode, entry_type: EntryType, entry_data_edits: &Value) -> Element<'static, Message, Renderer<KeyboltTheme>> {
+pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_edits: &Value) -> Element<'static, Message, Renderer<KeyboltTheme>> {
     match current_page_mode {
         PageMode::Closed => {
             Space::new(Length::Fixed(0.0), Length::Fixed(0.0)).into()

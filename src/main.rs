@@ -4,7 +4,7 @@ use iced::window::{self, PlatformSpecific, Position};
 mod secure;
 mod gui;
 use gui::core::app::KeyboltApp;
-use gui::styles::style_constants::FONT_SIZE_BODY;
+use gui::styles::font_constants::FONT_SIZE_BODY;
 
 // Run application
 fn main() -> Result<(), iced::Error> {
