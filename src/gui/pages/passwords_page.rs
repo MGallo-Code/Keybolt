@@ -1,17 +1,13 @@
-use iced::Length;
+use iced::{Length, Renderer, Element};
 use iced::widget::{Column, Container, Text, Button, Scrollable};
-use iced::Element;
 use serde_json::Value;
 
 // Import Message enum from the main application module
 use crate::gui::core::message::Message;
-use crate::gui::styles::types::{
-    style_type::StyleType,
-    element_type::ElementType,
-};
+use crate::gui::styles::keybolt_theme::KeyboltTheme;
 
 // Define the user interface layout for the PasswordsPage
-pub fn view_page(style: StyleType, entries: &Value, selected_entry_id: i32) -> Element<'static, Message> {
+pub fn view_page(theme: KeyboltTheme, entries: &Value, selected_entry_id: i32) -> Element<'static, Message, Renderer<KeyboltTheme>> {
     // Create a text label for the PasswordsPage
     let label = Text::new("Passwords page");
     let password_entry = |entry_id: i32, label: String, username: String| {

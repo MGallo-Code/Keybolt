@@ -1,30 +1,26 @@
-use iced::Length;
+use iced::{Length, Renderer, Element};
 use iced::widget::{Column, Container, Text, Button};
-use iced::Element;
 
 // Import Message enum from the main application module
 use crate::gui::core::message::Message;
-use crate::gui::styles::types::{
-    style_type::StyleType,
-    element_type::ElementType,
-};
+use crate::gui::styles::keybolt_theme::KeyboltTheme;
 
 // Define the user interface layout for the ProfilePage
-pub fn view_page(style: StyleType) -> Element<'static, Message> {
+pub fn view_page(theme: KeyboltTheme) -> Element<'static, Message, Renderer<KeyboltTheme>> {
     // Create a text label for the ProfilePage
     let label = Text::new("Profile Page");
     let fjord_mode_btn = Button::new("Fjord Mode")
         .width(Length::Fixed(200.0))
-        .on_press(Message::ChangeStyle(StyleType::Fjord));
+        .on_press(Message::ChangeStyle(KeyboltTheme::Fjord));
     let vibrant_mode_btn = Button::new("Vibrant Mode")
         .width(Length::Fixed(200.0))
-        .on_press(Message::ChangeStyle(StyleType::Vibrant));
+        .on_press(Message::ChangeStyle(KeyboltTheme::Vibrant));
     let dark_mode_btn = Button::new("Dark Mode")
         .width(Length::Fixed(200.0))
-        .on_press(Message::ChangeStyle(StyleType::Dark));
-    let default_mode_btn = Button::new("Default Mode")
+        .on_press(Message::ChangeStyle(KeyboltTheme::Dark));
+    let default_mode_btn = Button::new("Light Mode")
         .width(Length::Fixed(200.0))
-        .on_press(Message::ChangeStyle(StyleType::Default));
+        .on_press(Message::ChangeStyle(KeyboltTheme::Light));
 
     let col = Column::new()
         .push(label)

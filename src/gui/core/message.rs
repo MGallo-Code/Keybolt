@@ -1,14 +1,12 @@
-use serde_json::Value;
-
-use crate::gui::pages::details_page::{PageMode, EntryType};
-use crate::gui::styles::types::style_type::StyleType;
+use crate::gui::pages::details_page::PageMode;
 use crate::gui::core::app::Pages;
+use crate::gui::styles::keybolt_theme::KeyboltTheme;
 
 #[derive(Clone, Debug)]
 /// Messages types that permit to react to application interactions/subscriptions
 pub enum Message {
     ChangePage(Pages),
-    ChangeStyle(StyleType),
+    ChangeStyle(KeyboltTheme),
     ChangeEntryMode(PageMode),
     SaveEntryEdits,
     SelectEntry(i32),

@@ -1,7 +1,9 @@
-use iced::{widget::{Container, Column, Text, Space, Button, Row, Scrollable, TextInput}, Element, Length};
+use iced::{Length, Renderer, Element};
+use iced::widget::{Column, Container, Text, Button, Space, Row, Scrollable, TextInput};
 use serde_json::Value;
 
-use crate::gui::{styles::types::{element_type::ElementType, style_type::StyleType}, core::{message::Message}};
+use crate::gui::styles::keybolt_theme::KeyboltTheme;
+use crate::gui::core::message::Message;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PageMode {
@@ -28,7 +30,7 @@ impl EntryType {
 }
 
 // Define the user interface layout for the ProfilePage
-pub fn view_page(style: StyleType, current_page_mode: PageMode, entry_type: EntryType, entry_data_edits: &Value) -> Element<'static, Message> {
+pub fn view_page(theme: KeyboltTheme, current_page_mode: PageMode, entry_type: EntryType, entry_data_edits: &Value) -> Element<'static, Message, Renderer<KeyboltTheme>> {
     match current_page_mode {
         PageMode::Closed => {
             Space::new(Length::Fixed(0.0), Length::Fixed(0.0)).into()

@@ -1,6 +1,6 @@
 //! Module defining the application structure: messages, updates, subscriptions.
 use iced::widget::{TextInput, Button, Text, Row, Container};
-use iced::{executor, Application, Command, Element, Theme, Length};
+use iced::{executor, Application, Command, Element, Length, Renderer};
 use serde_json::Value;
 use zeroize::Zeroize;
 
@@ -18,8 +18,7 @@ use crate::gui::pages::{
     profile_page,
 };
 
-use crate::gui::styles::types::element_type::ElementType;
-use crate::gui::styles::types::style_type;
+use crate::gui::styles::keybolt_theme::KeyboltTheme;
 use crate::secure::encrypt::{read_data, encrypt_sensitive_fields, decrypt_sensitive_fields, write_data};
 
 // An enumeration of the different views in the application
@@ -41,7 +40,7 @@ pub enum LoginState {
 pub struct KeyboltApp {
     pub login_state: LoginState,
     pub current_page: Pages,
-    pub current_style: style_type::StyleType,
+    pub current_theme: KeyboltTheme,
     pub passphrase: String,
     pub entries: Value,
     pub selected_entry_id: i32,
@@ -53,14 +52,14 @@ pub struct KeyboltApp {
 impl Application for KeyboltApp {
     type Executor = executor::Default;
     type Message = Message;
-    type Theme = Theme;
+    type Theme = KeyboltTheme;
     type Flags = ();
 
     fn new(_flags: Self::Flags) -> (Self, Command<Message>) {
         (KeyboltApp {
             login_state: LoginState::LoggedOut,
             current_page: Pages::PasswordsPage,
-            current_style: style_type::StyleType::Default,
+            current_theme: KeyboltTheme::Light,
             passphrase: String::new(),
             entries: Value::Null,
             selected_entry_id: -1,
@@ -86,7 +85,7 @@ impl Application for KeyboltApp {
                 self.selected_entry_id = -1;
                 self.current_entry_mode = PageMode::Closed;
             },
-            Message::ChangeStyle(style) => self.current_style = style,
+            Message::ChangeStyle(theme) => self.current_theme = theme,
             Message::PasswordInputChanged(passphrase) => self.passphrase = passphrase,
             Message::PasswordInputSubmit => {
                 if self.login_state != LoginState::LoggingIn {
@@ -163,16 +162,15 @@ impl Application for KeyboltApp {
         Command::none()
     }
 
-    fn view(&self) -> Element<Message> {
+    fn view(&self) -> Element<Message, Renderer<KeyboltTheme>> {
         // Add nav and window view together, display()
-        let combine_views = |view| {
+        let combine_views = |view| -> Element<'static, Message, Renderer<KeyboltTheme>> {
             Row::new()
-                .push(nav_page::view_page(self.current_style, self.current_page))
+                .push(nav_page::view_page(self.current_theme, self.current_page))
                 .push(view)
-                .push(details_page::view_page(self.current_style, self.current_entry_mode, self.current_entry_type, &self.current_entry_edits))
+                .push(details_page::view_page(self.current_theme, self.current_entry_mode, self.current_entry_type, &self.current_entry_edits))
                 .into()
         };
-
         // Set appropriate window view based on the current_view value
         match (self.login_state, self.current_page) {
             // User not logged in
@@ -186,18 +184,18 @@ impl Application for KeyboltApp {
                     .on_input(Message::PasswordInputChanged)
                     .on_submit(Message::PasswordInputSubmit)
                     .password();
-                
+
                 let submit_button =
                     Button::new(Text::new("Unlock"))
                         .padding(8)
                         .on_press(Message::PasswordInputSubmit);
-            
+
                 let content = Row::new()
                     .width(Length::Fixed(300.0))
                     .spacing(5)
                     .push(input)
                     .push(submit_button);
-            
+
                 Container::new(content)
                     .width(Length::Fill)
                     .height(Length::Fill)
@@ -206,10 +204,10 @@ impl Application for KeyboltApp {
                     .into()
             },
             // User is logged in
-            (_, Pages::ProfilePage) => combine_views(profile_page::view_page(self.current_style)),
-            (_, Pages::PasswordsPage) => combine_views(passwords_page::view_page(self.current_style, &self.entries["passwords"], self.selected_entry_id)),
-            (_, Pages::IdentitiesPage) => combine_views(identities_page::view_page(self.current_style, &self.entries["identities"], self.selected_entry_id)),
-            (_, Pages::CardsPage) => combine_views(cards_page::view_page(self.current_style, &self.entries["cards"], self.selected_entry_id)),
+            (_, Pages::ProfilePage) => combine_views(profile_page::view_page(self.current_theme)),
+            (_, Pages::PasswordsPage) => combine_views(passwords_page::view_page(self.current_theme, &self.entries["passwords"], self.selected_entry_id)),
+            (_, Pages::IdentitiesPage) => combine_views(identities_page::view_page(self.current_theme, &self.entries["identities"], self.selected_entry_id)),
+            (_, Pages::CardsPage) => combine_views(cards_page::view_page(self.current_theme, &self.entries["cards"], self.selected_entry_id)),
         }
     }
 } 

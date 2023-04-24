@@ -1,23 +1,19 @@
-use iced::Length;
+use iced::{Length, Renderer, Element};
 use iced::widget::{Column, Container, Text, Button};
-use iced::Element;
 
 use crate::gui::core::app::Pages;
 // Import Message enum from the main application module
 use crate::gui::core::message::Message;
+use crate::gui::styles::keybolt_theme::KeyboltTheme;
 use crate::gui::styles::style_constants::{
     FONT_SIZE_NAV,
     FONT_SIZE_NAV_TITLE,
     JOSEFIN_SANS_REG,
     RALEWAY_BOLD,
 };
-use crate::gui::styles::types::{
-    style_type::StyleType,
-    element_type::ElementType,
-};
 
 // Define the user interface layout for the ProfilePage
-pub fn view_page(style: StyleType, current_page: Pages) -> Element<'static, Message> {
+pub fn view_page(theme: KeyboltTheme, current_page: Pages) -> Element<'static, Message, Renderer<KeyboltTheme>> {
     let nav_btn = |label, page| {
         Button::new(
             Text::new(label)
