@@ -21,8 +21,7 @@ pub fn view_page() -> Element<'static, Message, Renderer<KeyboltTheme>> {
         .on_press(Message::ChangeStyle(KeyboltTheme::Dark));
     let default_mode_btn = Button::new("Light Mode")
         .width(Length::Fixed(200.0))
-        .on_press(Message::ChangeStyle(KeyboltTheme::Light))
-        .style(ButtonStyle::New);
+        .on_press(Message::ChangeStyle(KeyboltTheme::Light));
 
     let col = Column::new()
         .push(label)

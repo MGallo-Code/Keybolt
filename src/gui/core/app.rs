@@ -18,6 +18,8 @@ use crate::gui::pages::{
     profile_page,
 };
 
+use crate::gui::styles::elements::button::ButtonStyle;
+use crate::gui::styles::elements::text_input::TextInputStyle;
 use crate::gui::styles::keybolt_theme::KeyboltTheme;
 use crate::secure::encrypt::{read_data, encrypt_sensitive_fields, decrypt_sensitive_fields, write_data};
 
@@ -182,12 +184,14 @@ impl Application for KeyboltApp {
                     .padding(8)
                     .on_input(Message::PasswordInputChanged)
                     .on_submit(Message::PasswordInputSubmit)
-                    .password();
+                    .password()
+                    .style(TextInputStyle::Primary);
 
                 let submit_button =
                     Button::new(Text::new("Unlock"))
                         .padding(8)
-                        .on_press(Message::PasswordInputSubmit);
+                        .on_press(Message::PasswordInputSubmit)
+                        .style(ButtonStyle::Secondary);
 
                 let content = Row::new()
                     .width(Length::Fixed(300.0))

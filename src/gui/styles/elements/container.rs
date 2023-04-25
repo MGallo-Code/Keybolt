@@ -1,14 +1,26 @@
 use crate::gui::styles::keybolt_theme::KeyboltTheme;
 use iced::widget::container;
-use iced::Color;
+
+#[derive(Default)]
+pub enum ContainerStyle {
+    #[default]
+    Primary,
+    Secondary,
+}
 
 impl container::StyleSheet for KeyboltTheme {
-    type Style = ();
+    type Style = ContainerStyle;
 
     fn appearance(&self, _style: &Self::Style) -> container::Appearance {
         container::Appearance {
-                text_color: Some(Color::WHITE),
-                ..Default::default()
+            background: Some(
+                match _style {
+                    ContainerStyle::Primary => iced::Background::Color(self.palette().primary),
+                    ContainerStyle::Secondary => iced::Background::Color(self.palette().secondary),
+                }
+            ),
+            text_color: Some(self.palette().background),
+            ..Default::default()
         }
     }
 }

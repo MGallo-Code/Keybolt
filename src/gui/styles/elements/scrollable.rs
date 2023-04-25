@@ -1,19 +1,24 @@
 use crate::gui::styles::keybolt_theme::KeyboltTheme;
 use iced::widget::scrollable::{self, Scrollbar};
-use iced::{color, Color};
+use iced::Color;
+
+#[derive(Default)]
+pub enum ScrollableStyle {
+    #[default]
+    Primary,
+}
 
 impl scrollable::StyleSheet for KeyboltTheme {
-    type Style = ();
+    type Style = ScrollableStyle;
 
-    /// Produces the style of an active scrollbar.
-    fn active(&self, style: &Self::Style) -> Scrollbar {
+    fn active(&self, _style: &Self::Style) -> Scrollbar {
         scrollable::Scrollbar {
-            background: Some(iced::Background::Color(color!(0x477c47))),
+            background: Some(iced::Background::Color(self.palette().secondary)),
             border_radius: 5.0,
             border_width: 1.0,
             border_color: Color::TRANSPARENT,
             scroller: scrollable::Scroller {
-                color: color!(0xFFFFFF),
+                color: self.palette().primary,
                 border_radius: 5.0,
                 border_width: 0.0,
                 border_color: Color::TRANSPARENT,
@@ -21,19 +26,18 @@ impl scrollable::StyleSheet for KeyboltTheme {
         }
     }
 
-    /// Produces the style of a scrollbar when the scrollable is being hovered.
     fn hovered(
         &self,
-        style: &Self::Style,
-        is_mouse_over_scrollbar: bool,
+        _style: &Self::Style,
+        _is_mouse_over_scrollbar: bool,
     ) -> Scrollbar {
         scrollable::Scrollbar {
-            background: Some(iced::Background::Color(color!(0x477c47))),
+            background: Some(iced::Background::Color(self.palette().secondary)),
             border_radius: 5.0,
             border_width: 1.0,
             border_color: Color::TRANSPARENT,
             scroller: scrollable::Scroller {
-                color: color!(0x324731),
+                color: self.palette().primary,
                 border_radius: 5.0,
                 border_width: 0.0,
                 border_color: Color::TRANSPARENT,
@@ -41,39 +45,14 @@ impl scrollable::StyleSheet for KeyboltTheme {
         }
     }
 
-    /// Produces the style of a scrollbar that is being dragged.
     fn dragging(&self, style: &Self::Style) -> Scrollbar {
-        scrollable::Scrollbar {
-            background: Some(iced::Background::Color(color!(0x477c47))),
-            border_radius: 5.0,
-            border_width: 1.0,
-            border_color: Color::TRANSPARENT,
-            scroller: scrollable::Scroller {
-                color: color!(0x324731),
-                border_radius: 5.0,
-                border_width: 0.0,
-                border_color: Color::TRANSPARENT,
-            },
-        }
+        self.hovered(style, true)
     }
 
-    /// Produces the style of an active horizontal scrollbar.
     fn active_horizontal(&self, style: &Self::Style) -> Scrollbar {
-        scrollable::Scrollbar {
-            background: Some(iced::Background::Color(color!(0x477c47))),
-            border_radius: 5.0,
-            border_width: 1.0,
-            border_color: Color::TRANSPARENT,
-            scroller: scrollable::Scroller {
-                color: color!(0x324731),
-                border_radius: 5.0,
-                border_width: 0.0,
-                border_color: Color::TRANSPARENT,
-            },
-        }
+        self.active(style)
     }
 
-    /// Produces the style of a horizontal scrollbar when the scrollable is being hovered.
     fn hovered_horizontal(
         &self,
         style: &Self::Style,
@@ -82,7 +61,6 @@ impl scrollable::StyleSheet for KeyboltTheme {
         self.hovered(style, is_mouse_over_scrollbar)
     }
 
-    /// Produces the style of a horizontal scrollbar that is being dragged.
     fn dragging_horizontal(&self, style: &Self::Style) -> Scrollbar {
         self.hovered_horizontal(style, true)
     }

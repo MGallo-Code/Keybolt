@@ -4,6 +4,8 @@ use iced::widget::{Column, Container, Text, Button};
 use crate::gui::core::app::Pages;
 // Import Message enum from the main application module
 use crate::gui::core::message::Message;
+use crate::gui::styles::elements::button::ButtonStyle;
+use crate::gui::styles::elements::text::TextStyle;
 use crate::gui::styles::keybolt_theme::KeyboltTheme;
 use crate::gui::styles::font_constants::{
     FONT_SIZE_NAV,
@@ -23,6 +25,7 @@ pub fn view_page(current_page: Pages) -> Element<'static, Message, Renderer<Keyb
             .width(Length::Fixed(200.0))
             .padding(10)
             .on_press(Message::ChangePage(page))
+            .style(ButtonStyle::NavButton(current_page == page))
     };
 
     // Nav column
@@ -30,6 +33,7 @@ pub fn view_page(current_page: Pages) -> Element<'static, Message, Renderer<Keyb
         Text::new("Keybolt")
             .font(JOSEFIN_SANS_REG)
             .size(FONT_SIZE_NAV_TITLE)
+            .style(TextStyle::NavHeader)
         )
         .padding(15);
     let profile_page_btn = nav_btn("Profile", Pages::ProfilePage);

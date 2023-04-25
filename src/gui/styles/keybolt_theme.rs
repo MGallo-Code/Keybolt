@@ -12,10 +12,10 @@ pub enum KeyboltTheme {
 impl KeyboltTheme {
     pub fn palette(&self) -> KeyboltPalette {
         match self {
-            KeyboltTheme::Light => KeyboltPalette::GREEN,
-            KeyboltTheme::Dark => KeyboltPalette::BLUE,
-            KeyboltTheme::Vibrant => KeyboltPalette::BLUE,
-            KeyboltTheme::Fjord => KeyboltPalette::BLUE,
+            KeyboltTheme::Light => KeyboltPalette::LIGHT,
+            KeyboltTheme::Dark => KeyboltPalette::LIGHT,
+            KeyboltTheme::Vibrant => KeyboltPalette::LIGHT,
+            KeyboltTheme::Fjord => KeyboltPalette::LIGHT,
         }
     }
 }
@@ -23,41 +23,49 @@ impl KeyboltTheme {
 pub struct KeyboltPalette {
     pub primary: Color,
     pub secondary: Color,
-    pub tertiary: Color,
-    pub text_light: Color,
-    pub text_dark: Color,
+    pub accent: Color,
+    pub background: Color,
+    pub text: Color,
+    pub subdued_text: Color,
+    pub active_button: Color,
 }
 
 impl KeyboltPalette {
-    pub const GREEN: Self = Self {
+    pub const LIGHT: Self = Self {
         primary: Color::from_rgb(
-            0x47 as f32 / 255.0,
-            0x7c as f32 / 255.0,
-            0x47 as f32 / 255.0,
+            0x3C as f32 / 255.0,
+            0x4F as f32 / 255.0,
+            0x76 as f32 / 255.0,
         ),
         secondary: Color::from_rgb(
-            0x32 as f32 / 255.0,
-            0x47 as f32 / 255.0,
-            0x31 as f32 / 255.0,
+            0x65 as f32 / 255.0,
+            0x7E as f32 / 255.0,
+            0xA8 as f32 / 255.0,
         ),
-        tertiary: Color::WHITE,
-        text_dark: Color::BLACK,
-        text_light: Color::WHITE,
-    };
-
-    pub const BLUE: Self = Self {
-        primary: Color::from_rgb(
-            0xFF as f32 / 255.0,
-            0xFF as f32 / 255.0,
-            0xFF as f32 / 255.0,
+        accent: Color::from_rgb(
+            0xF2 as f32 / 255.0,
+            0xC1 as f32 / 255.0,
+            0x4E as f32 / 255.0,
         ),
-        secondary: Color::from_rgb(
-            0x00 as f32 / 255.0,
-            0x00 as f32 / 255.0,
-            0x00 as f32 / 255.0,
+        background: Color::from_rgb(
+            0xF8 as f32 / 255.0,
+            0xF9 as f32 / 255.0,
+            0xFB as f32 / 255.0,
         ),
-        tertiary: Color::BLACK,
-        text_dark: Color::WHITE,
-        text_light: Color::BLACK,
+        text: Color::from_rgb(
+            0x21 as f32 / 255.0,
+            0x25 as f32 / 255.0,
+            0x29 as f32 / 255.0,
+        ),
+        subdued_text: Color::from_rgb(
+            0x6C as f32 / 255.0,
+            0x75 as f32 / 255.0,
+            0x7D as f32 / 255.0,
+        ),
+        active_button: Color::from_rgb(
+            0x9A as f32 / 255.0,
+            0xA2 as f32 / 255.0,
+            0xB6 as f32 / 255.0,
+        ),
     };
 }

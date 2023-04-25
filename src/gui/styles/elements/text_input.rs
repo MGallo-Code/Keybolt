@@ -1,59 +1,57 @@
 use crate::gui::styles::keybolt_theme::KeyboltTheme;
 use iced::widget::text_input;
-use iced::{color, Color};
+use iced::Color;
+
+#[derive(Default)]
+pub enum TextInputStyle {
+    #[default]
+    Primary,
+}
 
 impl text_input::StyleSheet for KeyboltTheme {
-    type Style = ();
+    type Style = TextInputStyle;
 
-    /// Produces the style of an active text input.
     fn active(&self, _style: &Self::Style) -> text_input::Appearance {
         text_input::Appearance {
-            background: iced::Background::Color(color!(0x477c47)),
-            border_color: color!(0x324731),
+            background: iced::Background::Color(self.palette().background),
+            border_color: self.palette().primary,
             border_width: 1.0,
             border_radius: 5.0,
-            icon_color: color!(0x477c47),
+            icon_color: self.palette().primary,
         }
     }
 
-    /// Produces the style of a focused text input.
     fn focused(&self, _style: &Self::Style) -> text_input::Appearance {
         text_input::Appearance {
-            background: iced::Background::Color(color!(0x477c47)),
-            border_color: color!(0xFFFFFF),
+            background: iced::Background::Color(self.palette().background),
+            border_color: self.palette().accent,
             border_width: 2.0,
             border_radius: 5.0,
-            icon_color: color!(0x477c47),
+            icon_color: self.palette().accent,
         }
     }
 
-    /// Produces the [`Color`] of the placeholder of a text input.
-    fn placeholder_color(&self, style: &Self::Style) -> Color {
-        color!(0, 0, 0)
+    fn placeholder_color(&self, _style: &Self::Style) -> Color {
+        self.palette().subdued_text
     }
 
-    /// Produces the [`Color`] of the value of a text input.
-    fn value_color(&self, style: &Self::Style) -> Color {
-        color!(255, 255, 255)
+    fn value_color(&self, _style: &Self::Style) -> Color {
+        self.palette().text
     }
 
-    /// Produces the [`Color`] of the value of a disabled text input.
-    fn disabled_color(&self, style: &Self::Style) -> Color {
-        color!(255, 255, 255)
+    fn disabled_color(&self, _style: &Self::Style) -> Color {
+        self.palette().subdued_text
     }
 
-    /// Produces the [`Color`] of the selection of a text input.
-    fn selection_color(&self, style: &Self::Style) -> Color {
-        color!(255, 255, 255)
+    fn selection_color(&self, _style: &Self::Style) -> Color {
+        self.palette().accent
     }
 
-    /// Produces the style of an hovered text input.
-    fn hovered(&self, style: &Self::Style) -> text_input::Appearance {
-        self.focused(style)
+    fn hovered(&self, _style: &Self::Style) -> text_input::Appearance {
+        self.focused(_style)
     }
 
-    /// Produces the style of a disabled text input.
-    fn disabled(&self, style: &Self::Style) -> text_input::Appearance {
-        self.disabled(style)
+    fn disabled(&self, _style: &Self::Style) -> text_input::Appearance {
+        self.active(_style)
     }
 }
