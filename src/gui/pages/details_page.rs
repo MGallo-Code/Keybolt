@@ -2,6 +2,7 @@ use iced::{Length, Renderer, Element};
 use iced::widget::{Column, Container, Text, Button, Space, Row, Scrollable, TextInput};
 use serde_json::Value;
 
+use crate::gui::styles::elements::text::TextStyle;
 use crate::gui::styles::keybolt_theme::KeyboltTheme;
 use crate::gui::core::message::Message;
 
@@ -38,7 +39,7 @@ pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_
         _ => {
             // Nav column
             let keybolt_title = Container::new(
-                Text::new("Details Window")
+                Text::new("Details Window").style(TextStyle::DetailsTitle)
                 )
                 .padding(15);
             
