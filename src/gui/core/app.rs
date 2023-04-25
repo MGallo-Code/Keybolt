@@ -2,7 +2,6 @@
 use iced::widget::{TextInput, Button, Text, Row, Container};
 use iced::{executor, Application, Command, Element, Length, Renderer};
 use serde_json::Value;
-use zeroize::Zeroize;
 
 use crate::gui::core::{
     message::Message,
@@ -10,12 +9,9 @@ use crate::gui::core::{
 
 use crate::gui::pages::details_page::{PageMode, EntryType};
 use crate::gui::pages::{
-    cards_page,
     details_page,
-    identities_page,
     nav_page,
-    passwords_page,
-    profile_page,
+    profile_page, entries_page,
 };
 
 use crate::gui::styles::elements::button::ButtonStyle;
@@ -108,15 +104,19 @@ impl Application for KeyboltApp {
             },
             Message::ChangeEntryMode(mode) => {
                 if mode == PageMode::Edit {
-                    decrypt_sensitive_fields(&self.passphrase, &mut self.current_entry_edits, self.current_entry_type);
+                    decrypt_sensitive_fields(&self.passphrase, &mut self.current_entry_edits, self.current_entry_type).unwrap();
                 } else if self.current_entry_mode == PageMode::Edit {
-                    encrypt_sensitive_fields(&self.passphrase, &mut self.current_entry_edits, self.current_entry_type);
+                    encrypt_sensitive_fields(&self.passphrase, &mut self.current_entry_edits, self.current_entry_type).unwrap();
+                }
+                // Reset selected item if details window closed
+                if mode == PageMode::Closed {
+                    self.selected_entry_id = -1;
                 }
                 self.current_entry_mode = mode;
             },
             Message::SaveEntryEdits => {
                 self.current_entry_mode = PageMode::View;
-                encrypt_sensitive_fields(&self.passphrase, &mut self.current_entry_edits, self.current_entry_type);
+                encrypt_sensitive_fields(&self.passphrase, &mut self.current_entry_edits, self.current_entry_type).unwrap();
                 self.entries[self.current_entry_type.as_str()][self.selected_entry_id as usize] = self.current_entry_edits.clone();
                 //TODO UNCOMMENT TO SAVE CHANGES TO FILE
                 // write_data(&self.passphrase, self.entries.clone());
@@ -208,9 +208,9 @@ impl Application for KeyboltApp {
             },
             // User is logged in
             (_, Pages::ProfilePage) => combine_views(profile_page::view_page()),
-            (_, Pages::PasswordsPage) => combine_views(passwords_page::view_page(&self.entries["passwords"], self.selected_entry_id)),
-            (_, Pages::IdentitiesPage) => combine_views(identities_page::view_page(&self.entries["identities"], self.selected_entry_id)),
-            (_, Pages::CardsPage) => combine_views(cards_page::view_page(&self.entries["cards"], self.selected_entry_id)),
+            (_, Pages::PasswordsPage) => combine_views(entries_page::view_page(&self.entries["passwords"], EntryType::Passwords, self.selected_entry_id)),
+            (_, Pages::IdentitiesPage) => combine_views(entries_page::view_page(&self.entries["identities"], EntryType::Identities, self.selected_entry_id)),
+            (_, Pages::CardsPage) => combine_views(entries_page::view_page(&self.entries["cards"], EntryType::Cards, self.selected_entry_id)),
         }
     }
 
