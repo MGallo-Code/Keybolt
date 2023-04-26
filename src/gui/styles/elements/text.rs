@@ -15,7 +15,6 @@ impl text::StyleSheet for KeyboltTheme {
     fn appearance(&self, _style: Self::Style) -> text::Appearance {
         match _style {
             TextStyle::Primary => text::Appearance {
-                color: Some(self.palette().text),
                 ..text::Appearance::default()
             },
             TextStyle::NavHeader => text::Appearance {

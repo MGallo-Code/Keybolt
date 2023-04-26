@@ -3,7 +3,6 @@ use iced::widget::{Column, Container, Text, Button};
 
 // Import Message enum from the main application module
 use crate::gui::core::message::Message;
-use crate::gui::styles::elements::button::ButtonStyle;
 use crate::gui::styles::keybolt_theme::KeyboltTheme;
 
 // Define the user interface layout for the ProfilePage

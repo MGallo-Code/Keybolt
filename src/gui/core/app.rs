@@ -16,6 +16,7 @@ use crate::gui::pages::{
 
 use crate::gui::styles::elements::button::ButtonStyle;
 use crate::gui::styles::elements::text_input::TextInputStyle;
+use crate::gui::styles::font_constants::RALEWAY_BOLD;
 use crate::gui::styles::keybolt_theme::KeyboltTheme;
 use crate::secure::encrypt::{read_data, encrypt_sensitive_fields, decrypt_sensitive_fields, write_data};
 
@@ -134,7 +135,7 @@ impl Application for KeyboltApp {
             Message::UpdatePasswordUsername(input) => self.current_entry_edits["username"] = Value::String(input),
             Message::UpdatePasswordPassword(input) => self.current_entry_edits["password"] = Value::String(input),
             Message::UpdatePasswordOtpAuth(input) => self.current_entry_edits["otpauth"] = Value::String(input),
-            Message::UpdatePasswordFavorite(input) => self.current_entry_edits["favorite"] = Value::Bool(input),
+            Message::UpdatePasswordFavorite(input) => self.current_entry_edits["favorite"] = Value::String(input),
             Message::UpdatePasswordTags(input) => self.current_entry_edits["tags"] = Value::String(input),
             Message::UpdatePasswordNotes(input) => self.current_entry_edits["notes"] = Value::String(input),
 
@@ -188,7 +189,10 @@ impl Application for KeyboltApp {
                     .style(TextInputStyle::Primary);
 
                 let submit_button =
-                    Button::new(Text::new("Unlock"))
+                    Button::new(
+                        Text::new("Unlock")
+                            .font(RALEWAY_BOLD)
+                        )
                         .padding(8)
                         .on_press(Message::PasswordInputSubmit)
                         .style(ButtonStyle::Secondary);

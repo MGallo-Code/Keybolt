@@ -2,6 +2,7 @@ use iced::{Length, Renderer, Element};
 use iced::widget::{Column, Container, Text, Button, Space, Row, Scrollable, TextInput};
 use serde_json::Value;
 
+use crate::gui::styles::elements::button::ButtonStyle;
 use crate::gui::styles::elements::text::TextStyle;
 use crate::gui::styles::keybolt_theme::KeyboltTheme;
 use crate::gui::core::message::Message;
@@ -45,10 +46,12 @@ pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_
             
             // HEADER
             let close_btn = Button::new("Close")
-                .on_press(Message::ChangeEntryMode(PageMode::Closed));
+                .on_press(Message::ChangeEntryMode(PageMode::Closed))
+                .style(ButtonStyle::Secondary);
 
             let edit_toggle_btn_str = if current_page_mode == PageMode::Edit { "Save" } else { "Edit" };
-            let mut edit_toggle_btn = Button::new(edit_toggle_btn_str);
+            let mut edit_toggle_btn = Button::new(edit_toggle_btn_str)
+                .style(ButtonStyle::Secondary);
             if current_page_mode == PageMode::Edit {
                 edit_toggle_btn = edit_toggle_btn
                     .on_press(Message::SaveEntryEdits)
@@ -240,10 +243,9 @@ pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_
                                     .padding(8)
                                     .on_input(Message::UpdatePasswordOtpAuth);
                         
-                                //TODO bool
-                                // let favorite = TextInput::new("Favorite", &entry_data["favorite"].as_str().unwrap_or(""))
-                                //     .padding(8)
-                                //     .on_input(Message::UpdatePasswordFavorite);
+                                let favorite = TextInput::new("Favorite", &entry_data_edits["favorite"].as_str().unwrap_or(""))
+                                    .padding(8)
+                                    .on_input(Message::UpdatePasswordFavorite);
                         
                                 let tags = TextInput::new("Tags", &entry_data_edits["tags"].as_str().unwrap_or(""))
                                     .padding(8)
@@ -260,8 +262,7 @@ pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_
                                         .push(username)
                                         .push(password)
                                         .push(otpauth)
-                                        //TODO bool
-                                        // .push(favorite)
+                                        .push(favorite)
                                         .push(tags)
                                         .push(notes)
                                         .width(iced::Length::Fill)

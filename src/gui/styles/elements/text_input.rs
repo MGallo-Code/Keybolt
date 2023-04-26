@@ -6,6 +6,7 @@ use iced::Color;
 pub enum TextInputStyle {
     #[default]
     Primary,
+    EntrySearchBar,
 }
 
 impl text_input::StyleSheet for KeyboltTheme {
@@ -16,7 +17,11 @@ impl text_input::StyleSheet for KeyboltTheme {
             background: iced::Background::Color(self.palette().background),
             border_color: self.palette().primary,
             border_width: 1.0,
-            border_radius: 5.0,
+            border_radius:
+                match _style {
+                    TextInputStyle::Primary => 5.0,
+                    TextInputStyle::EntrySearchBar => 0.0,
+                },
             icon_color: self.palette().primary,
         }
     }
@@ -26,7 +31,11 @@ impl text_input::StyleSheet for KeyboltTheme {
             background: iced::Background::Color(self.palette().background),
             border_color: self.palette().accent,
             border_width: 2.0,
-            border_radius: 5.0,
+            border_radius:
+                match _style {
+                    TextInputStyle::Primary => 5.0,
+                    TextInputStyle::EntrySearchBar => 0.0,
+                },
             icon_color: self.palette().accent,
         }
     }

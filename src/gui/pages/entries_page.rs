@@ -6,6 +6,7 @@ use serde_json::Value;
 use crate::gui::core::message::Message;
 use crate::gui::styles::elements::button::ButtonStyle;
 use crate::gui::styles::elements::container::ContainerStyle;
+use crate::gui::styles::elements::text_input::TextInputStyle;
 use crate::gui::styles::keybolt_theme::KeyboltTheme;
 
 use super::details_page::EntryType;
@@ -13,7 +14,7 @@ use super::details_page::EntryType;
 // Define the user interface layout for the PasswordsPage
 pub fn view_page(entries: &Value, entry_type: EntryType, selected_entry_id: i32) -> Element<'static, Message, Renderer<KeyboltTheme>> {
 
-    let search_bar = TextInput::new("Search", "");
+    let search_bar = TextInput::new("Search", "").style(TextInputStyle::EntrySearchBar);
     // Create a column layout, add the label and button to it
     let mut col = Column::new();
     let get_val = |value: &Value, label: &str| {
@@ -113,6 +114,6 @@ pub fn view_page(entries: &Value, entry_type: EntryType, selected_entry_id: i32)
         .width(Length::Fill)
         .height(Length::Fill)
         .center_x()
-        .style(ContainerStyle::Secondary)
+        .style(ContainerStyle::EntryListContainer)
         .into()
 }
