@@ -26,9 +26,19 @@ impl button::StyleSheet for KeyboltTheme {
             }
             ButtonStyle::EntryListButton(active) => {
                 if *active {
-                    (self.palette().active_button, self.palette().text)
+                    match self {
+                        KeyboltTheme::Light => (self.palette().active_entry_button, self.palette().text),
+                        KeyboltTheme::Dark => (self.palette().active_entry_button, self.palette().light_text),
+                        KeyboltTheme::Vibrant => (self.palette().active_entry_button, self.palette().text),
+                        KeyboltTheme::Fjord => (self.palette().active_entry_button, self.palette().text),
+                    }
                 } else {
-                    (self.palette().muted_accent, self.palette().text)
+                    match self {
+                        KeyboltTheme::Light => (self.palette().muted_accent, self.palette().text),
+                        KeyboltTheme::Dark => (self.palette().muted_accent, self.palette().light_text),
+                        KeyboltTheme::Vibrant => (self.palette().muted_accent, self.palette().text),
+                        KeyboltTheme::Fjord => (self.palette().muted_accent, self.palette().text),
+                    }
                 }
             }
         };
@@ -53,9 +63,19 @@ impl button::StyleSheet for KeyboltTheme {
             }
             ButtonStyle::EntryListButton(active) => {
                 if *active {
-                    (self.palette().active_button, self.palette().light_text)
+                    match self {
+                        KeyboltTheme::Light => (self.palette().active_entry_button, self.palette().light_text),
+                        KeyboltTheme::Dark => (self.palette().active_entry_button, self.palette().light_text),
+                        KeyboltTheme::Vibrant => (self.palette().active_entry_button, self.palette().light_text),
+                        KeyboltTheme::Fjord => (self.palette().active_entry_button, self.palette().light_text),
+                    }
                 } else {
-                    (self.palette().muted_accent, self.palette().subdued_text)
+                    match self {
+                        KeyboltTheme::Light => (self.palette().active_entry_button, self.palette().light_text),
+                        KeyboltTheme::Dark => (self.palette().active_entry_button, self.palette().light_text),
+                        KeyboltTheme::Vibrant => (self.palette().active_entry_button, self.palette().light_text),
+                        KeyboltTheme::Fjord => (self.palette().active_entry_button, self.palette().light_text),
+                    }
                 }
             }
         };
