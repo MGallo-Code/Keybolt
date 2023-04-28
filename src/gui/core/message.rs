@@ -19,7 +19,7 @@ pub enum Message {
     UpdatePasswordUsername(String),
     UpdatePasswordPassword(String),
     UpdatePasswordOtpAuth(String),
-    UpdatePasswordFavorite(String),
+    UpdatePasswordFavorite(bool),
     UpdatePasswordTags(String),
     UpdatePasswordNotes(String),
 

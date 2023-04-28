@@ -125,8 +125,6 @@ impl Application for KeyboltApp {
             Message::SelectEntry(entry_id) => {
                 self.selected_entry_id = entry_id;
                 self.current_entry_edits = self.entries[self.current_entry_type.as_str()][entry_id as usize].clone();
-                println!("{:?}", entry_id);
-                println!("{:?}", self.entries[self.current_entry_type.as_str()][entry_id as usize]);
                 self.current_entry_mode = PageMode::View;
             },
             // Messages for updating password entries
@@ -135,7 +133,9 @@ impl Application for KeyboltApp {
             Message::UpdatePasswordUsername(input) => self.current_entry_edits["username"] = Value::String(input),
             Message::UpdatePasswordPassword(input) => self.current_entry_edits["password"] = Value::String(input),
             Message::UpdatePasswordOtpAuth(input) => self.current_entry_edits["otpauth"] = Value::String(input),
-            Message::UpdatePasswordFavorite(input) => self.current_entry_edits["favorite"] = Value::String(input),
+            Message::UpdatePasswordFavorite(input) => {
+                self.current_entry_edits["favorite"] = Value::Bool(input);
+                self.entries["passwords"][self.selected_entry_id as usize]["favorite"] = Value::Bool(input)},
             Message::UpdatePasswordTags(input) => self.current_entry_edits["tags"] = Value::String(input),
             Message::UpdatePasswordNotes(input) => self.current_entry_edits["notes"] = Value::String(input),
 

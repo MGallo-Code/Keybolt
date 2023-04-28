@@ -1,5 +1,5 @@
 use iced::{Length, Renderer, Element};
-use iced::widget::{Column, Container, Text, Button, Space, Row, Scrollable, TextInput};
+use iced::widget::{Column, Container, Text, Button, Space, Row, Scrollable, TextInput, Toggler};
 use serde_json::Value;
 
 use crate::gui::styles::elements::button::ButtonStyle;
@@ -88,8 +88,8 @@ pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_
                                 let otpauth_label = Text::new("OTP Auth: ").size(16);
                                 let otpauth_value = Text::new(entry_data_edits["otpauth"].to_string()).size(16);
 
-                                // let favorite_label = Text::new("Favorite: ").size(16);
-                                // let favorite_value = Text::new(if entry_data_edits.favorite { "Yes" } else { "No" }).size(16);
+                                let favorite_label = Text::new("Favorite: ").size(16);
+                                let favorite_value = Toggler::new(String::from("Favorite"), entry_data_edits["favorite"] == Value::Bool(true), Message::UpdatePasswordFavorite);
 
                                 let tags_label = Text::new("Tags: ").size(16);
                                 let tags_value = Text::new(entry_data_edits["tags"].to_string());
@@ -109,8 +109,8 @@ pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_
                                     .push(password_value)
                                     .push(otpauth_label)
                                     .push(otpauth_value)
-                                    // .push(favorite_label)
-                                    // .push(favorite_value)
+                                    .push(favorite_label)
+                                    .push(favorite_value)
                                     .push(tags_label)
                                     .push(tags_value)
                                     .push(notes_label)
@@ -243,9 +243,8 @@ pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_
                                     .padding(8)
                                     .on_input(Message::UpdatePasswordOtpAuth);
                         
-                                let favorite = TextInput::new("Favorite", &entry_data_edits["favorite"].as_str().unwrap_or(""))
-                                    .padding(8)
-                                    .on_input(Message::UpdatePasswordFavorite);
+                                let favorite_label = Text::new("Favorite: ").size(16);
+                                let favorite_value = Toggler::new(String::from("Favorite"), entry_data_edits["favorite"] == Value::Bool(true), Message::UpdatePasswordFavorite);
                         
                                 let tags = TextInput::new("Tags", &entry_data_edits["tags"].as_str().unwrap_or(""))
                                     .padding(8)
@@ -257,12 +256,13 @@ pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_
                         
                                 Scrollable::new(
                                     Column::new()
+                                        .push(favorite_label)
+                                        .push(favorite_value)
                                         .push(title)
                                         .push(url)
                                         .push(username)
                                         .push(password)
                                         .push(otpauth)
-                                        .push(favorite)
                                         .push(tags)
                                         .push(notes)
                                         .width(iced::Length::Fill)

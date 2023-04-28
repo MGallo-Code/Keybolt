@@ -4,3 +4,4 @@ pub mod container;
 pub mod scrollable;
 pub mod text;
 pub mod text_input;
+pub mod toggler;
