@@ -7,6 +7,7 @@ pub enum TextStyle {
     Primary,
     NavHeader,
     DetailsTitle,
+    EntryInputTitle
 }
 
 impl text::StyleSheet for KeyboltTheme {
@@ -22,9 +23,16 @@ impl text::StyleSheet for KeyboltTheme {
                 ..text::Appearance::default()
             },
             TextStyle::DetailsTitle => text::Appearance {
-                color: Some(self.palette().secondary),
+                color: Some(self.palette().light_text),
                 ..text::Appearance::default()
             },
+            TextStyle::EntryInputTitle => text::Appearance {
+                color: match self {
+                    KeyboltTheme::Dark => Some(self.palette().light_text),
+                    _ => Some(self.palette().text),
+                },
+                ..text::Appearance::default()
+            }
         }
     }
 }

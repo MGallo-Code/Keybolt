@@ -1,9 +1,11 @@
-use iced::{Length, Renderer, Element};
+use iced::{Length, Renderer, Element, Padding, Alignment};
 use iced::widget::{Column, Container, Text, Button, Space, Row, Scrollable, TextInput, Toggler};
 use serde_json::Value;
 
 use crate::gui::styles::elements::button::ButtonStyle;
+use crate::gui::styles::elements::container::ContainerStyle;
 use crate::gui::styles::elements::text::TextStyle;
+use crate::gui::styles::elements::text_input::TextInputStyle;
 use crate::gui::styles::keybolt_theme::KeyboltTheme;
 use crate::gui::core::message::Message;
 
@@ -38,12 +40,6 @@ pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_
             Space::new(Length::Fixed(0.0), Length::Fixed(0.0)).into()
         },
         _ => {
-            // Nav column
-            let keybolt_title = Container::new(
-                Text::new("Details Window").style(TextStyle::DetailsTitle)
-                )
-                .padding(15);
-            
             // HEADER
             let close_btn = Button::new("Close")
                 .on_press(Message::ChangeEntryMode(PageMode::Closed))
@@ -59,102 +55,175 @@ pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_
                 edit_toggle_btn = edit_toggle_btn.on_press(Message::ChangeEntryMode(PageMode::Edit));
             }
 
-            
+            let left_btn_container = Column::new()
+                .push(close_btn)
+                .width(Length::Fill)
+                .align_items(iced::Alignment::Start);
+
+            let right_btn_container = Column::new()
+                .push(edit_toggle_btn)
+                .width(Length::Fill)
+                .align_items(iced::Alignment::End);
 
             // HEADER
             let header_row = Row::new()
-                .push(close_btn)
-                .push(keybolt_title)
-                .push(edit_toggle_btn);
+                .push(left_btn_container)
+                .push(right_btn_container);
 
             // BODY
             let details_body =
                 match current_page_mode {
                     PageMode::View => {
+                        let get_entry_str = |entry_name: &str| -> String {
+                            match entry_data_edits[entry_name] {
+                                Value::String(ref s) => s.to_string(),
+                                _ => "".to_string(),
+                            }
+                        };
                         match entry_type {
                             EntryType::Passwords => {
-                                let title_label = Text::new("Title: ").size(16);
-                                let title_value = Text::new(entry_data_edits["title"].to_string()).size(16);
+                                let title = 
+                                    Column::new()
+                                    .push(
+                                        Text::new(get_entry_str("title"))
+                                            .size(35)
+                                            .horizontal_alignment(iced::alignment::Horizontal::Center)
+                                            .width(iced::Length::Fill)
+                                            .style(TextStyle::DetailsTitle)
+                                    );
 
-                                let url_label = Text::new("URL: ").size(16);
-                                let url_value = Text::new(entry_data_edits["url"].to_string()).size(16);
-
-                                let username_label = Text::new("Username: ").size(16);
-                                let username_value = Text::new(entry_data_edits["username"].to_string()).size(16);
-
-                                let password_label = Text::new("Password: ").size(16);
-                                let password_value = Text::new(entry_data_edits["password"].to_string()).size(16);
-
-                                let otpauth_label = Text::new("OTP Auth: ").size(16);
-                                let otpauth_value = Text::new(entry_data_edits["otpauth"].to_string()).size(16);
-
-                                let favorite_label = Text::new("Favorite: ").size(16);
                                 let favorite_value = Toggler::new(String::from("Favorite"), entry_data_edits["favorite"] == Value::Bool(true), Message::UpdatePasswordFavorite);
 
-                                let tags_label = Text::new("Tags: ").size(16);
-                                let tags_value = Text::new(entry_data_edits["tags"].to_string());
+                                let login_info = Container::new(
+                                    Column::new()
+                                        .push(
+                                            Text::new("Username: ")
+                                            .size(16)
+                                            .style(TextStyle::EntryInputTitle)
+                                        )
+                                        .push(
+                                            TextInput::new("Username", &entry_data_edits["username"].as_str().unwrap_or(""))
+                                                .padding(8)
+                                        )
+                                        .push(
+                                            Text::new("Password: ")
+                                            .size(16)
+                                            .style(TextStyle::EntryInputTitle)
 
-                                let notes_label = Text::new("Notes: ").size(16);
-                                let notes_value = Text::new(entry_data_edits["notes"].to_string()).size(16);
+                                        )
+                                        .push(
+                                            TextInput::new("Password", &entry_data_edits["password"].as_str().unwrap_or(""))
+                                                .padding(8)
+                                                .password()
+                                        )
+                                    )
+                                    .padding(8)
+                                    .style(ContainerStyle::EntryInputContainer);
+
+                                let mut otpauth_col = Column::new();
+                                let mut otp_auth_exists = entry_data_edits["otpauth"].to_string().is_empty();
+                                if otp_auth_exists {
+                                    otpauth_col = otpauth_col.push(
+                                        Text::new("OTP Authentication: ")
+                                            .size(16)
+                                            .style(TextStyle::EntryInputTitle));
+                                    otpauth_col = otpauth_col.push(
+                                        TextInput::new("otpauth", &entry_data_edits["otpauth"].as_str().unwrap_or(""))
+                                                .padding(8));
+                                };
+                                let mut otpauth_container = Container::new(otpauth_col).style(ContainerStyle::EntryInputContainer);
+                                if otp_auth_exists {
+                                    otpauth_container = otpauth_container.padding(8);
+                                }
+
+                                let website_info = Container::new(
+                                    Column::new()
+                                        .push(
+                                            Text::new("Site URL: ")
+                                                .size(16)
+                                                .style(TextStyle::EntryInputTitle)
+                                        )
+                                        .push(
+                                            TextInput::new("https://www.example.com", &entry_data_edits["url"].as_str().unwrap_or(""))
+                                                .padding(8)
+                                        )
+                                    )
+                                    .padding(8)
+                                    .style(ContainerStyle::EntryInputContainer);
+
+                                let extra_info = Container::new(
+                                    Column::new()
+                                        .push(
+                                            Text::new("Tags: ")
+                                            .size(16)
+                                            .style(TextStyle::EntryInputTitle)
+                                        )
+                                        .push(
+                                            TextInput::new("Tags here...", &entry_data_edits["tags"].as_str().unwrap_or(""))
+                                                .padding(8)
+                                        )
+                                        .push(
+                                            Text::new("Notes: ")
+                                            .size(16)
+                                            .style(TextStyle::EntryInputTitle)
+                                        )
+                                        .push(
+                                            TextInput::new("Notes here...", &entry_data_edits["notes"].as_str().unwrap_or(""))
+                                                .padding(8)
+                                        )
+                                    )
+                                    .padding(8)
+                                    .style(ContainerStyle::EntryInputContainer);
 
                                 let content = Column::new()
                                     .spacing(10)
-                                    .push(title_label)
-                                    .push(title_value)
-                                    .push(url_label)
-                                    .push(url_value)
-                                    .push(username_label)
-                                    .push(username_value)
-                                    .push(password_label)
-                                    .push(password_value)
-                                    .push(otpauth_label)
-                                    .push(otpauth_value)
-                                    .push(favorite_label)
+                                    .push(title)
                                     .push(favorite_value)
-                                    .push(tags_label)
-                                    .push(tags_value)
-                                    .push(notes_label)
-                                    .push(notes_value)
+                                    .push(login_info)
+                                    .push(otpauth_container)
+                                    .push(website_info)
+                                    .push(extra_info)
+                                    .padding(Padding::new(15.0))
                                     .width(iced::Length::Fill);
 
                                 Scrollable::new(content)
                             },
                             EntryType::Identities => {
                                 let title_label = Text::new("Title: ").size(16);
-                                let title_value = Text::new(entry_data_edits["title"].to_string()).size(16);
+                                let title_value = Text::new(get_entry_str("title")).size(16);
 
                                 let first_name_label = Text::new("First Name: ").size(16);
-                                let first_name_value = Text::new(entry_data_edits["first_name"].to_string()).size(16);
+                                let first_name_value = Text::new(get_entry_str("first_name")).size(16);
 
                                 let middle_initial_label = Text::new("Middle Initial: ").size(16);
-                                let middle_initial_value = Text::new(entry_data_edits["middle_initial"].to_string()).size(16);
+                                let middle_initial_value = Text::new(get_entry_str("middle_initial")).size(16);
 
                                 let last_name_label = Text::new("Last Name: ").size(16);
-                                let last_name_value = Text::new(entry_data_edits["last_name"].to_string()).size(16);
+                                let last_name_value = Text::new(get_entry_str("last_name")).size(16);
 
                                 let address_label = Text::new("Address: ").size(16);
-                                let address_value = Text::new(entry_data_edits["address"].to_string()).size(16);
+                                let address_value = Text::new(get_entry_str("address")).size(16);
 
                                 let city_label = Text::new("City: ").size(16);
-                                let city_value = Text::new(entry_data_edits["city"].to_string()).size(16);
+                                let city_value = Text::new(get_entry_str("city")).size(16);
 
                                 let country_label = Text::new("Country: ").size(16);
-                                let country_value = Text::new(entry_data_edits["country"].to_string()).size(16);
+                                let country_value = Text::new(get_entry_str("country")).size(16);
 
                                 let state_label = Text::new("State: ").size(16);
-                                let state_value = Text::new(entry_data_edits["state"].to_string()).size(16);
+                                let state_value = Text::new(get_entry_str("state")).size(16);
 
                                 let zipcode_label = Text::new("Zipcode: ").size(16);
-                                let zipcode_value = Text::new(entry_data_edits["zipcode"].to_string()).size(16);
+                                let zipcode_value = Text::new(get_entry_str("zipcode")).size(16);
 
                                 let phone_label = Text::new("Phone: ").size(16);
-                                let phone_value = Text::new(entry_data_edits["phone"].to_string()).size(16);
+                                let phone_value = Text::new(get_entry_str("phone")).size(16);
 
                                 let email_label = Text::new("Email: ").size(16);
-                                let email_value = Text::new(entry_data_edits["email"].to_string()).size(16);
+                                let email_value = Text::new(get_entry_str("email")).size(16);
 
                                 let apt_number_label = Text::new("Apt Number: ").size(16);
-                                let apt_number_value = Text::new(entry_data_edits["apt_number"].to_string()).size(16);
+                                let apt_number_value = Text::new(get_entry_str("apt_number")).size(16);
 
                                 let content = Column::new()
                                     .spacing(10)
@@ -188,19 +257,19 @@ pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_
                             },
                             EntryType::Cards => {
                                 let title_label = Text::new("Title: ").size(16);
-                                let title_value = Text::new(entry_data_edits["title"].to_string()).size(16);
+                                let title_value = Text::new(get_entry_str("title")).size(16);
 
                                 let card_number_label = Text::new("Card Number: ").size(16);
-                                let card_number_value = Text::new(entry_data_edits["card_number"].to_string()).size(16);
+                                let card_number_value = Text::new(get_entry_str("card_number")).size(16);
 
                                 let cardholder_name_label = Text::new("Cardholder Name: ").size(16);
-                                let cardholder_name_value = Text::new(entry_data_edits["cardholder_name"].to_string()).size(16);
+                                let cardholder_name_value = Text::new(get_entry_str("cardholder_name")).size(16);
 
                                 let expiration_date_label = Text::new("Expiration Date: ").size(16);
-                                let expiration_date_value = Text::new(entry_data_edits["expiration_date"].to_string()).size(16);
+                                let expiration_date_value = Text::new(get_entry_str("expiration_date")).size(16);
 
                                 let security_code_label = Text::new("Security Code: ").size(16);
-                                let security_code_value = Text::new(entry_data_edits["security_code"].to_string()).size(16);
+                                let security_code_value = Text::new(get_entry_str("security_code")).size(16);
 
                                 let content = Column::new()
                                     .spacing(10)
