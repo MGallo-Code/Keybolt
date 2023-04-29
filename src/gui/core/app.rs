@@ -93,7 +93,6 @@ impl Application for KeyboltApp {
                     match read_data(&self.passphrase) {
                         Ok(data) => {
                             self.entries = data;
-                            // println!("Data: {:?}", self.entries);
                             self.login_state = LoginState::LoggedIn;
                         },
                         Err(e) => {
@@ -119,8 +118,7 @@ impl Application for KeyboltApp {
                 self.current_entry_mode = PageMode::View;
                 encrypt_sensitive_fields(&self.passphrase, &mut self.current_entry_edits, self.current_entry_type).unwrap();
                 self.entries[self.current_entry_type.as_str()][self.selected_entry_id as usize] = self.current_entry_edits.clone();
-                //TODO UNCOMMENT TO SAVE CHANGES TO FILE
-                // write_data(&self.passphrase, self.entries.clone());
+                write_data(&self.passphrase, self.entries.clone()).unwrap();
             },
             Message::SelectEntry(entry_id) => {
                 self.selected_entry_id = entry_id;
@@ -135,7 +133,9 @@ impl Application for KeyboltApp {
             Message::UpdatePasswordOtpAuth(input) => self.current_entry_edits["otpauth"] = Value::String(input),
             Message::UpdatePasswordFavorite(input) => {
                 self.current_entry_edits["favorite"] = Value::Bool(input);
-                self.entries["passwords"][self.selected_entry_id as usize]["favorite"] = Value::Bool(input)},
+                self.entries["passwords"][self.selected_entry_id as usize]["favorite"] = Value::Bool(input);
+                write_data(&self.passphrase, self.entries.clone()).unwrap()
+            },
             Message::UpdatePasswordTags(input) => self.current_entry_edits["tags"] = Value::String(input),
             Message::UpdatePasswordNotes(input) => self.current_entry_edits["notes"] = Value::String(input),
 

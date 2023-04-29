@@ -99,7 +99,6 @@ pub fn read_data(passphrase: &str) -> Result<Value, EncryptError> {
         Ok(plaintext) => {
             let decrypted_data_str = String::from_utf8(plaintext)?;
             let decrypted_json: Value = serde_json::from_str(&decrypted_data_str)?;
-            println!("Data decrypted successfully!");
             Ok(decrypted_json)
         }
         Err(e) => {
@@ -126,8 +125,6 @@ pub fn write_data(passphrase: &str, data: Value) -> Result<(), EncryptError> {
             buf_writer.write_all(&nonce).unwrap();
             buf_writer.write_all(&salt).unwrap();
             buf_writer.flush().unwrap();
-
-            println!("Data encrypted successfully!");
         }
         Err(e) => {
             eprintln!("Error encrypting data: {}", e);
