@@ -25,6 +25,7 @@ pub enum Message {
 
     // Messages for updating identity entries
     UpdateIdentityTitle(String),
+    UpdateIdentityFavorite(bool),
     UpdateIdentityFirstName(String),
     UpdateIdentityMiddleInitial(String),
     UpdateIdentityLastName(String),
@@ -36,9 +37,14 @@ pub enum Message {
     UpdateIdentityPhone(String),
     UpdateIdentityEmail(String),
     UpdateIdentityAptNumber(String),
+    UpdateIdentityWebsite(String),
+    UpdateIdentityBirthMonth(String),
+    UpdateIdentityBirthDay(String),
+    UpdateIdentityBirthYear(String),
 
     // Messages for updating card entries
     UpdateCardTitle(String),
+    UpdateCardFavorite(bool),
     UpdateCardName(String),
     UpdateCardNumber(String),
     UpdateCardLastFour(String),

@@ -71,10 +71,10 @@ impl button::StyleSheet for KeyboltTheme {
                     }
                 } else {
                     match self {
-                        KeyboltTheme::Light => (self.palette().active_entry_button, self.palette().light_text),
-                        KeyboltTheme::Dark => (self.palette().active_entry_button, self.palette().light_text),
-                        KeyboltTheme::Vibrant => (self.palette().active_entry_button, self.palette().light_text),
-                        KeyboltTheme::Fjord => (self.palette().active_entry_button, self.palette().light_text),
+                        KeyboltTheme::Light => (self.palette().muted_accent, self.palette().text),
+                        KeyboltTheme::Dark => (self.palette().muted_accent, self.palette().text),
+                        KeyboltTheme::Vibrant => (self.palette().muted_accent, self.palette().text),
+                        KeyboltTheme::Fjord => (self.palette().muted_accent, self.palette().text),
                     }
                 }
             }

@@ -131,9 +131,9 @@ impl Application for KeyboltApp {
             Message::UpdatePasswordUsername(input) => self.current_entry_edits["username"] = Value::String(input),
             Message::UpdatePasswordPassword(input) => self.current_entry_edits["password"] = Value::String(input),
             Message::UpdatePasswordOtpAuth(input) => self.current_entry_edits["otpauth"] = Value::String(input),
-            Message::UpdatePasswordFavorite(input) => {
+            Message::UpdatePasswordFavorite(input) | Message::UpdateCardFavorite(input) | Message::UpdateIdentityFavorite(input) => {
                 self.current_entry_edits["favorite"] = Value::Bool(input);
-                self.entries["passwords"][self.selected_entry_id as usize]["favorite"] = Value::Bool(input);
+                self.entries[self.current_entry_type.as_str()][self.selected_entry_id as usize]["favorite"] = Value::Bool(input);
                 write_data(&self.passphrase, self.entries.clone()).unwrap()
             },
             Message::UpdatePasswordTags(input) => self.current_entry_edits["tags"] = Value::String(input),
@@ -152,6 +152,10 @@ impl Application for KeyboltApp {
             Message::UpdateIdentityPhone(input) => self.current_entry_edits["phone"] = Value::String(input),
             Message::UpdateIdentityEmail(input) => self.current_entry_edits["email"] = Value::String(input),
             Message::UpdateIdentityAptNumber(input) => self.current_entry_edits["apt_number"] = Value::String(input),
+            Message::UpdateIdentityBirthMonth(input) => self.current_entry_edits["birth_month"] = Value::String(input),
+            Message::UpdateIdentityBirthDay(input) => self.current_entry_edits["birth_day"] = Value::String(input),
+            Message::UpdateIdentityBirthYear(input) => self.current_entry_edits["birth_year"] = Value::String(input),
+            Message::UpdateIdentityWebsite(input) => self.current_entry_edits["website"] = Value::String(input),
 
             // Messages for updating card entries
             Message::UpdateCardTitle(input) => self.current_entry_edits["title"] = Value::String(input),

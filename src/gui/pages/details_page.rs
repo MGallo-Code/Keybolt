@@ -210,17 +210,17 @@ pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_
                                             Row::new()
                                                 .push(
                                                     TextInput::new("First Name", &entry_data_edits["first_name"].as_str().unwrap_or(""))
-                                                        .width(Length::Fill)
+                                                        .width(Length::FillPortion(5))
                                                 )
                                                 .push(
                                                     TextInput::new("M.I.", &entry_data_edits["middle_initial"].as_str().unwrap_or(""))
                                                         .width(Length::Shrink)
+                                                        .width(Length::FillPortion(1))
                                                 )
                                                 .push(
                                                     TextInput::new("Last Name", &entry_data_edits["last_name"].as_str().unwrap_or(""))
-                                                        .width(Length::Fill)
+                                                        .width(Length::FillPortion(5))
                                                 )
-                                                .padding(8)
                                             )
                                     )
                                     .padding(8)
@@ -228,15 +228,51 @@ pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_
 
                                 let address_container = Container::new(Column::new()
                                     .push(Text::new("Address: ").size(16).style(TextStyle::EntryInputTitle))
-                                    .push(Text::new(get_entry_str("address")).size(16))
-                                    .push(Text::new("City: ").size(16).style(TextStyle::EntryInputTitle))
-                                    .push(Text::new(get_entry_str("city")).size(16))
-                                    .push(Text::new("Country: ").size(16).style(TextStyle::EntryInputTitle))
-                                    .push(Text::new(get_entry_str("country")).size(16))
-                                    .push(Text::new("State: ").size(16).style(TextStyle::EntryInputTitle))
-                                    .push(Text::new(get_entry_str("state")).size(16))
-                                    .push(Text::new("Zipcode: ").size(16).style(TextStyle::EntryInputTitle))
-                                    .push(Text::new(get_entry_str("zipcode")).size(16))
+                                    .push(
+                                        TextInput::new("123 Main St", &entry_data_edits["address"].as_str().unwrap_or("default"))
+                                        .width(Length::Fill)
+                                    )
+                                   
+                                    .push(
+                                        Row::new()
+                                        .push(
+                                            Column::new()
+                                            .push(Text::new("City: ").size(16).style(TextStyle::EntryInputTitle))
+                                            .push(
+                                                TextInput::new("Anytown", &entry_data_edits["city"].as_str().unwrap_or("default"))
+                                            )
+                                            .width(Length::FillPortion(6))
+                                        )
+                                        .push(
+                                            Column::new()
+                                                .push(Text::new("Zipcode: ").size(16).style(TextStyle::EntryInputTitle))
+                                                .push(
+                                                    TextInput::new("22222", &entry_data_edits["zipcode"].as_str().unwrap_or("default"))
+                                                )
+                                                .width(Length::FillPortion(2))
+                                        )
+                                        .width(Length::Fill)
+                                    )
+                                    .push(
+                                        Row::new()
+                                        .push(
+                                            Column::new()
+                                            .push(Text::new("Country: ").size(16).style(TextStyle::EntryInputTitle))
+                                            .push(
+                                                TextInput::new("United States", &entry_data_edits["country"].as_str().unwrap_or("default"))
+                                            )
+                                            .width(Length::FillPortion(5))
+                                        )
+                                        .push(
+                                            Column::new()
+                                                .push(Text::new("State: ").size(16).style(TextStyle::EntryInputTitle))
+                                                .push(
+                                                    TextInput::new("CA", &entry_data_edits["state"].as_str().unwrap_or("default"))
+                                                )
+                                                .width(Length::Fill)
+                                        )
+                                        .width(Length::Fill)
+                                    )
                                     .push(Text::new("Apt Number: ").size(16).style(TextStyle::EntryInputTitle))
                                     .push(Text::new(get_entry_str("apt_number")).size(16))
                             ).style(ContainerStyle::EntryInputContainer)
@@ -256,6 +292,7 @@ pub fn view_page(current_page_mode: PageMode, entry_type: EntryType, entry_data_
                                     .push(name_container)
                                     .push(address_container)
                                     .push(contact_container)
+                                    .padding(15.0)
                                     .width(iced::Length::Fill);
 
                                 Scrollable::new(content)
