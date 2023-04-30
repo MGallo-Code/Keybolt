@@ -111,6 +111,7 @@ impl Application for KeyboltApp {
                 // Reset selected item if details window closed
                 if mode == PageMode::Closed {
                     self.selected_entry_id = -1;
+                    self.current_entry_edits = Value::Null;
                 }
                 self.current_entry_mode = mode;
             },
@@ -159,11 +160,22 @@ impl Application for KeyboltApp {
 
             // Messages for updating card entries
             Message::UpdateCardTitle(input) => self.current_entry_edits["title"] = Value::String(input),
-            Message::UpdateCardName(input) => self.current_entry_edits["name"] = Value::String(input),
-            Message::UpdateCardNumber(input) => self.current_entry_edits["card_number"] = Value::String(input),
-            Message::UpdateCardLastFour(input) => self.current_entry_edits["card_last_four"] = Value::String(input),
-            Message::UpdateCardExpirationDate(input) => self.current_entry_edits["expiration_date"] = Value::String(input),
+            Message::UpdateCardFirstName(input) => self.current_entry_edits["first_name"] = Value::String(input),
+            Message::UpdateCardMiddleInitial(input) => self.current_entry_edits["middle_initial"] = Value::String(input),
+            Message::UpdateCardLastName(input) => self.current_entry_edits["last_name"] = Value::String(input),
+            Message::UpdateCardNumber(input) => {
+                self.current_entry_edits["card_number"] = Value::String(input.clone());
+                self.current_entry_edits["card_last_four"] = Value::String(String::from(&input.clone()[input.len() - 4..]));
+            },
+            Message::UpdateCardExpirationMonth(input) => self.current_entry_edits["expiration_month"] = Value::String(input),
+            Message::UpdateCardExpirationYear(input) => self.current_entry_edits["expiration_year"] = Value::String(input),
             Message::UpdateCardSecurityCode(input) => self.current_entry_edits["security_code"] = Value::String(input),
+            Message::UpdateCardAddress(input) => self.current_entry_edits["address"] = Value::String(input),
+            Message::UpdateCardCity(input) => self.current_entry_edits["city"] = Value::String(input),
+            Message::UpdateCardCountry(input) => self.current_entry_edits["country"] = Value::String(input),
+            Message::UpdateCardState(input) => self.current_entry_edits["state"] = Value::String(input),
+            Message::UpdateCardZipcode(input) => self.current_entry_edits["zipcode"] = Value::String(input),
+            Message::UpdateCardAptNumber(input) => self.current_entry_edits["apt_number"] = Value::String(input), 
         }
         Command::none()
     }

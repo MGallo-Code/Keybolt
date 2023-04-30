@@ -80,7 +80,6 @@ pub fn view_page(entries: &Value, entry_type: EntryType, selected_entry_id: i32)
                 Button::new(
                     Column::new()
                         .push(Text::new(title))
-                        .push(Text::new(name))
                         .push(Text::new(format!("****-****-****-{}", card_last_four)))
                 )
                     .padding(25)
