@@ -76,7 +76,7 @@ pub fn view_page(entries: &Value, entry_type: EntryType, selected_entry_id: i32)
             }
         },
         EntryType::Cards => {
-            let card_entry = |entry_id: i32, title: String, name: String, card_last_four: String| {
+            let card_entry = |entry_id: i32, title: String, card_last_four: String| {
                 Button::new(
                     Column::new()
                         .push(Text::new(title))
@@ -92,7 +92,6 @@ pub fn view_page(entries: &Value, entry_type: EntryType, selected_entry_id: i32)
                     col = col.push(
                         card_entry(counter,
                             get_val(value, "title"),
-                            get_val(value, "name"),
                             get_val(value, "card_last_four"),
                         ),
                     );

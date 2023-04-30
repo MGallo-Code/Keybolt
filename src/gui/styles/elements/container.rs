@@ -5,7 +5,6 @@ use iced::widget::container;
 pub enum ContainerStyle {
     #[default]
     Primary,
-    Secondary,
     EntryListContainer,
     EntryInputContainer,
 }
@@ -18,7 +17,6 @@ impl container::StyleSheet for KeyboltTheme {
             background: Some(
                 match _style {
                     ContainerStyle::Primary => iced::Background::Color(self.palette().primary),
-                    ContainerStyle::Secondary => iced::Background::Color(self.palette().secondary),
                     ContainerStyle::EntryListContainer => iced::Background::Color(self.palette().muted_accent),
                     ContainerStyle::EntryInputContainer => match self {
                         KeyboltTheme::Dark => iced::Background::Color(self.palette().secondary),
